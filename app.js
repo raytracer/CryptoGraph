@@ -93,10 +93,8 @@ app.post('/user/create', function(req, res){
           'name': req.body.user,
           'password': req.body.pass,
           'e': req.body.e,
-          'd': req.body.d,
           'n': req.body.n,
-          'salt': req.body.salt,
-          'iv': req.body.iv
+          'pem': req.body.pem
       }
   };
 

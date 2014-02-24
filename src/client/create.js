@@ -33,29 +33,15 @@ $(document).ready(function() {
             rsa.generateKeyPair({bits: 2048, workers: 4}, function (error, keypair) {
                 var n = keypair.privateKey.n.toString();
                 var e = keypair.privateKey.e.toString();
-                var d = keypair.privateKey.d.toString();
 
-                var salt = forge.random.getBytesSync(128);
-                var derivedKey = forge.pkcs5.pbkdf2(pass1, salt, 10, 16);
-
-                var iv = forge.random.getBytesSync(16);
-
-                // encrypt some bytes using CBC mode
-                // (other modes include: CFB, OFB, and CTR)
-                var cipher = forge.aes.createEncryptionCipher(derivedKey, 'CBC');
-                cipher.start(iv);
-                cipher.update(forge.util.createBuffer(d));
-                cipher.finish();
-                var encrypted = cipher.output;
+                var pem = forge.pki.encryptRsaPrivateKey(keypair.privateKey, pass1);
 
                 var data = {
                     'user': user,
                     'pass': hashed,
                     'n': n,
                     'e': e,
-                    'd': encrypted.toHex().toString(),
-                    'iv': iv,
-                    'salt': salt
+                    'pem': pem,
                 };
 
                 $.post("/user/create", data, function(result) {
@@ -66,7 +52,7 @@ $(document).ready(function() {
                         $('#info').hide();
                         $('#success').show();
 
-                        data.d = keypair.privateKey.d.toString();
+                        data.privateKey = keypair.privateKey;
                         localStorage[result] = JSON.stringify(data);
                     }
                 });

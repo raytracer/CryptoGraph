@@ -8,3 +8,9 @@ body {
 h1 {
     text-align: center;
 }
+
+.post {
+    padding: 10px;
+    margin-top: 10px;
+    background-color: #C0D7FC;
+}

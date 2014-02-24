@@ -25,7 +25,7 @@ var startPrimus = function (server) {
               var allsparks = userIdToSparkId[sparkIdToUserId[this.id]];
               for (var i = 0; i < allsparks.length; i++) {
                 var spark = sparks[allsparks[i]];
-                spark.write(data.message);
+                spark.write(data);
               }
           }
       });
