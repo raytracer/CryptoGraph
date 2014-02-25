@@ -29,21 +29,30 @@ passport.serializeUser(function(user, done) {
   done(null, user);
 });
 
-passport.deserializeUser(function(id, done) {
-  done(null, id);
+passport.deserializeUser(function(name, done) {
+  done(null, name);
 });
 
 app.get('/', ensureAuthenticated, function(req, res){
-  res.render('stream.html', {id: req.user});
+  res.render('stream.html');
 });
 
-app.get('/user/getid', ensureAuthenticated, function(req, res){
+app.get('/user/getname', ensureAuthenticated, function(req, res){
   res.json(req.user);
 });
 
-app.post('/user/getdata', ensureAuthenticated, function(req, res){
-  db.getNodeById(req.body.id, function(err, node) {
-    res.json(node.data);
+app.get('/user/getdata', ensureAuthenticated, function(req, res){
+  var data = {
+      "props": {
+          'name': req.user
+      }
+  };
+  db.query('MATCH (u:user {name: {props}.name}) RETURN u', data, function (err, results) {
+    if (err || results.length < 1) {
+        res.json(false);
+    } else {
+        res.json(results[0].u._data.data);
+    }
   });
 });
 
@@ -73,11 +82,11 @@ app.post('/login', function(req, res){
           'password': req.body.pass
       }
   };
-  db.query('MATCH (u:user {name: {props}.name, password: {props}.password}) RETURN id(u) as id', data, function (err, results) {
+  db.query('MATCH (u:user {name: {props}.name, password: {props}.password}) RETURN u.name as name', data, function (err, results) {
     if (err || results.length < 1) {
         res.json(false);
     } else {
-        req.login(results[0].id, function(err) {});
+        req.login(results[0].name, function(err) {});
         res.json(true);
     }
   });
@@ -98,12 +107,12 @@ app.post('/user/create', function(req, res){
       }
   };
 
-  db.query('CREATE (u:user {props}) RETURN id(u) as id', data, function (err, results) {
+  db.query('CREATE (u:user {props}) RETURN u.name as name', data, function (err, results) {
     if (err || results.length < 1) {
         res.json(false);
     } else {
-        req.login(results[0].id, function(err) {});
-        res.json(results[0].id);
+        req.login(results[0].name, function(err) {});
+        res.json(results[0].name);
     }
   });
 

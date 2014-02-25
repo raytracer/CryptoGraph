@@ -2,16 +2,16 @@ $(document).ready(function() {
     var primus = new Primus('http://localhost:8000', {transformer: 'engine.io'});
 
 
-    $.get('/user/getid', function (id) {
-        if (localStorage[id] === undefined) {
-            $.post('/user/getdata', {'id': id}, function (data) {
+    $.get('/user/getname', function (name) {
+        if (localStorage[name] === undefined) {
+            $.get('/user/getdata', function (data) {
                 $('#decrypt').on('click', function (e) {
                     var password = $('#pass').val();
                     var pem = data.pem;
 
                     var privateKey = forge.pki.decryptRsaPrivateKey(pem, password);
                     data.pem = forge.pki.privateKeyToPem(privateKey);
-                    localStorage[id] = JSON.stringify(data);
+                    localStorage[name] = JSON.stringify(data);
                     $('#passdialog').modal('hide');
                 });
 
@@ -19,13 +19,13 @@ $(document).ready(function() {
             });
         }
 
-        primus.write({'id': id});
+        primus.write({'name': name});
 
         $('form').submit(function(event) {
             var message = $('#message').val();
             var BigInteger = forge.jsbn.BigInteger;
 
-            var data = JSON.parse(localStorage[id]);
+            var data = JSON.parse(localStorage[name]);
             var pem = data.pem;
 
             var privateKey = forge.pki.privateKeyFromPem(pem);
@@ -43,7 +43,7 @@ $(document).ready(function() {
         });
 
         primus.on('data', function (data) {
-            var localdata = JSON.parse(localStorage[id]);
+            var localdata = JSON.parse(localStorage[name]);
             var BigInteger = forge.jsbn.BigInteger;
             var pem = localdata.pem;
 

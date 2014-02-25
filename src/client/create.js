@@ -52,8 +52,8 @@ $(document).ready(function() {
                         $('#info').hide();
                         $('#success').show();
 
-                        data.privateKey = keypair.privateKey;
-                        localStorage[result] = JSON.stringify(data);
+                        data.pem = forge.pki.privateKeyToPem(keypair.privateKey);
+                        localStorage[user] = JSON.stringify(data);
                     }
                 });
 
