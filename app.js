@@ -62,7 +62,7 @@ app.post('/user/getpublickey', ensureAuthenticated, function(req, res){
           'name': req.body.name
       }
   };
-  db.query('MATCH (u:user {name: {props}.name) RETURN u.n as n, u.e as e', data, function (err, results) {
+  db.query('MATCH (u:user {name: {props}.name}) RETURN u.n as n, u.e as e', data, function (err, results) {
     if (err || results.length < 1) {
         res.json(false);
     } else {

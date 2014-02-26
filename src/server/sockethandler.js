@@ -20,27 +20,37 @@ var startPrimus = function (server) {
               nameToSparkId[data.name].push(this.id);
               sparkIdToUserId[this.id] = data.name;
               sparks[this.id] = this;
-          } else if (data.message !== undefined) {
-              // for now only send to the user
-              var allsparks =  nameToSparkId[sparkIdToUserId[this.id]];
-              for (var i = 0; i < allsparks.length; i++) {
-                var spark = sparks[allsparks[i]];
-                spark.write(data);
+          } else if (data.messages !== undefined) {
+              for (var i = 0; i < data.messages.length; i++) {
+                  var name = data.messages[i].name;
+
+                  var allsparks = nameToSparkId[name];
+                  for (var j = 0; j < allsparks.length; j++) {
+                    var spark = sparks[allsparks[j]];
+                    var message = data.messages[i];
+                    message.signature = data.signature;
+
+                    spark.write(message);
+                  }
               }
           }
       });
 
       spark.on('end', function () {
-          var name = sparkIdToUserId[this.id];
+          try {
+              var name = sparkIdToUserId[this.id];
 
-          var index =  nameToSparkId[name].indexOf(this.id);
+              var index = nameToSparkId[name].indexOf(this.id);
 
-          if (index > -1) {
-              nameToSparkId[name].splice(index, 1);
+              if (index > -1) {
+                nameToSparkId[name].splice(index, 1);
+              }
+
+              delete sparkIdToUserId[this.id];
+              delete sparks[this.id];
+          } catch (e) {
+            console.log(this.id);
           }
-
-          delete sparkIdToUserId[this.id];
-          delete sparks[this.id];
       });
     });
 };
