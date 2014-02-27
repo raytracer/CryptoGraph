@@ -4,7 +4,8 @@ var express = require('express'),
     app = express(),
     passport = require('passport'),
     LocalStrategy = require('passport-local').Strategy,
-    sockethandler = require('./src/server/sockethandler');
+    sockethandler = require('./src/server/sockethandler'),
+    jwt = require('jsonwebtoken');
 
 var neo4j = require('neo4j');
 var db = new neo4j.GraphDatabase('http://localhost:7474');
@@ -38,7 +39,12 @@ app.get('/', ensureAuthenticated, function(req, res){
 });
 
 app.get('/user/getname', ensureAuthenticated, function(req, res){
-  res.json(req.user);
+  var response = {
+    'name': req.user,
+    'token': jwt.sign({'name': req.user}, 'debug_secret')
+  }
+
+  res.json(response);
 });
 
 app.get('/user/getdata', ensureAuthenticated, function(req, res){

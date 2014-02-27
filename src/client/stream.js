@@ -1,8 +1,8 @@
 $(document).ready(function() {
-    var primus = new Primus('http://localhost:8000', {transformer: 'engine.io'});
+    $.get('/user/getname', function (response) {
+        var name = response.name;
+        var token = response.token;
 
-
-    $.get('/user/getname', function (name) {
         if (localStorage[name] === undefined) {
             $.get('/user/getdata', function (data) {
                 $('#decrypt').on('click', function (e) {
@@ -19,6 +19,12 @@ $(document).ready(function() {
             });
         }
 
+        var params = {
+            'name': name,
+            'token': token
+        };
+
+        var primus = new Primus('http://localhost:8000?' + serialize(params), {transformer: 'engine.io'});
         primus.write({'name': name});
 
         $('form').submit(function(event) {
@@ -98,3 +104,12 @@ $(document).ready(function() {
     });
 
 });
+
+serialize = function(obj) {
+  var str = [];
+  for(var p in obj)
+    if (obj.hasOwnProperty(p)) {
+      str.push(encodeURIComponent(p) + "=" + encodeURIComponent(obj[p]));
+    }
+  return str.join("&");
+}
