@@ -3,7 +3,7 @@ $(document).ready(function() {
         var name = response.name;
         var token = response.token;
 
-        if (localStorage[name] === undefined) {
+        if (sessionStorage[name] === undefined) {
             $.get('/user/getdata', function (data) {
                 $('#decrypt').on('click', function (e) {
                     var password = $('#pass').val();
@@ -11,7 +11,7 @@ $(document).ready(function() {
 
                     var privateKey = forge.pki.decryptRsaPrivateKey(pem, password);
                     data.pem = forge.pki.privateKeyToPem(privateKey);
-                    localStorage[name] = JSON.stringify(data);
+                    sessionStorage[name] = JSON.stringify(data);
                     $('#passdialog').modal('hide');
                 });
 
@@ -31,7 +31,7 @@ $(document).ready(function() {
             var message = $('#message').val();
             var BigInteger = forge.jsbn.BigInteger;
 
-            var data = JSON.parse(localStorage[name]);
+            var data = JSON.parse(sessionStorage[name]);
             var pem = data.pem;
 
             var privateKey = forge.pki.privateKeyFromPem(pem);
@@ -78,7 +78,7 @@ $(document).ready(function() {
         });
 
         primus.on('data', function (data) {
-            var localdata = JSON.parse(localStorage[name]);
+            var localdata = JSON.parse(sessionStorage[name]);
             var BigInteger = forge.jsbn.BigInteger;
             var pem = localdata.pem;
 

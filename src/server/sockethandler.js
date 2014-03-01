@@ -1,12 +1,13 @@
 var Primus = require('primus'),
-jwt = require('jsonwebtoken');
+    jwt = require('jsonwebtoken'),
+    mdb = require('./messagedb');
 
-var startPrimus = function (server) {
+var startPrimus = function (server, db) {
     var primus = new Primus(server, {transformer: 'engine.io'});
 
     //TODO: far from ideal (is there no getById in primus?)
     var nameToSparkId = {};
-    var sparkIdToUserId = {};
+    var sparkIdToName = {};
     var sparks = {};
 
     primus.on('connection', function connection(spark) {
@@ -22,11 +23,11 @@ var startPrimus = function (server) {
 
                 if (nameToSparkId[username] === undefined) {
                     nameToSparkId[username] = [spark.id];
-                    sparkIdToUserId[spark.id] = username;
+                    sparkIdToName[spark.id] = username;
                     sparks[spark.id] = spark;
                 } else {
                     nameToSparkId[username].push(spark.id);
-                    sparkIdToUserId[spark.id] = username;
+                    sparkIdToName[spark.id] = username;
                     sparks[spark.id] = spark;
                 }
 
@@ -41,16 +42,19 @@ var startPrimus = function (server) {
                                 var spark = sparks[allsparks[j]];
                                 var message = data.messages[i];
                                 message.signature = data.signature;
+                                message.from = sparkIdToName[this.id];
 
                                 spark.write(message);
                             }
+
+                            mdb.saveMessage(db, message);
                         }
                     }
                 });
 
                 spark.on('end', function () {
                     try {
-                        var name = sparkIdToUserId[this.id];
+                        var name = sparkIdToName[this.id];
 
                         var index = nameToSparkId[name].indexOf(this.id);
 
@@ -58,7 +62,7 @@ var startPrimus = function (server) {
                             nameToSparkId[name].splice(index, 1);
                         }
 
-                        delete sparkIdToUserId[this.id];
+                        delete sparkIdToName[this.id];
                         delete sparks[this.id];
                     } catch (e) {
                         console.log(this.id);

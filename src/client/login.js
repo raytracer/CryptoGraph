@@ -5,7 +5,7 @@ $(document).ready(function() {
         var user = $('#user').val();
         var pass = $('#pass').val();
 
-        var md = forge.md.sha1.create();
+        var md = forge.md.sha256.create();
         md.update(pass);
         var hashed = md.digest().toHex().toString();
 

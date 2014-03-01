@@ -24,7 +24,7 @@ $(document).ready(function() {
 
             $('#info').show();
 
-            var md = forge.md.sha1.create();
+            var md = forge.md.sha256.create();
             md.update(pass1);
             var hashed = md.digest().toHex().toString();
 
@@ -53,7 +53,7 @@ $(document).ready(function() {
                         $('#success').show();
 
                         data.pem = forge.pki.privateKeyToPem(keypair.privateKey);
-                        localStorage[user] = JSON.stringify(data);
+                        sessionStorage[user] = JSON.stringify(data);
                     }
                 });
 

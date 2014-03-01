@@ -135,6 +135,6 @@ function ensureAuthenticated(req, res, next) {
 }
 
 var server = require('http').createServer(app);
-sockethandler.startPrimus(server);
+sockethandler.startPrimus(server, db);
 
 server.listen(8000);
