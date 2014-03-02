@@ -31,26 +31,35 @@ var startPrimus = function (server, db) {
                     sparks[spark.id] = spark;
                 }
 
-                spark.on('data', function (data) {
+                mdb.getMessagesByName(db, username, function (messages) {
+                    for (var i = 0; i < messages.length; i++) {
+                        spark.write(messages[i]);
+                    }
+                });
+
+                var sendMessage = function (data) {
                     if (data.messages !== undefined) {
                         for (var i = 0; i < data.messages.length; i++) {
                             var name = data.messages[i].name;
-
-                            //TODO: check if user exits
                             var allsparks = nameToSparkId[name];
-                            for (var j = 0; j < allsparks.length; j++) {
-                                var spark = sparks[allsparks[j]];
-                                var message = data.messages[i];
-                                message.signature = data.signature;
-                                message.from = sparkIdToName[this.id];
 
-                                spark.write(message);
+                            if (allsparks !== undefined) {
+                                for (var j = 0; j < allsparks.length; j++) {
+                                    var spark = sparks[allsparks[j]];
+                                    var message = data.messages[i];
+                                    message.signature = data.signature;
+                                    message.from = username;
+
+                                    spark.write(message);
+                                }
                             }
 
                             mdb.saveMessage(db, message);
                         }
                     }
-                });
+                };
+
+                spark.on('data', sendMessage);
 
                 spark.on('end', function () {
                     try {

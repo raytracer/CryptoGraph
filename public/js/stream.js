@@ -42,7 +42,7 @@ $(document).ready(function() {
             var ownEncrypted = ownPublicKey.encrypt(message);
 
             messages.push({
-                'name': data.user,
+                'name': name,
                 'message': ownEncrypted
             });
 
@@ -55,25 +55,32 @@ $(document).ready(function() {
                 return elem.match(/\s+/) === null && elem.length > 0;
             });
 
+            var deferredRequests = [];
+
             for (var i = 0; i < recipients.length; i++) {
-                $.post('/user/getpublickey', {'name' : recipients[i]} , function(pk) {
-                    if (pk === false) {
-                        return;
-                    }
+                (function (index) {
+                    deferredRequests.push($.post('/user/getpublickey', {'name' : recipients[i]} , function(pk) {
+                        if (pk === false) {
+                            return;
+                        }
 
-                    var publicKey = forge.pki.setRsaPublicKey(new BigInteger(pk.n), new BigInteger(pk.e));
-                    var encrypted = publicKey.encrypt(message);
+                        var publicKey = forge.pki.setRsaPublicKey(new BigInteger(pk.n), new BigInteger(pk.e));
+                        var encrypted = publicKey.encrypt(message);
 
-                    messages.push({
-                        'name': recipients[i],
-                        'message': encrypted
-                    });
-                });
+                        messages.push({
+                            'name': recipients[index],
+                            'message': encrypted
+                        });
+                    }));
+                })(i);
             }
 
 
-            primus.write({'messages': messages,
-                          'signature': signature});
+            $.when.apply(null, deferredRequests).done(function() {
+                primus.write({'messages': messages,
+                              'signature': signature});
+            });
+
             event.preventDefault();
         });
 
@@ -89,7 +96,7 @@ $(document).ready(function() {
             md.update(message, 'utf8');
 
 
-            $.post('/user/getpublickey', {'name' : data.name}, function(pk) {
+            $.post('/user/getpublickey', {'name' : data.from}, function(pk) {
                 if (pk === false) {
                     return;
                 }
@@ -97,7 +104,11 @@ $(document).ready(function() {
                 var publicKey = forge.pki.setRsaPublicKey(new BigInteger(pk.n), new BigInteger(pk.e));
 
                 if (publicKey.verify(md.digest().bytes(), data.signature)) {
-                    $('#stream').append($('<p>').addClass('post').text(message));
+                    var post = $('<li>').addClass('post');
+                    post.append($('<p>').append($('<strong>').text(data.from)));
+                    post.append($('<p>').text(message));
+
+                    $(post).hide().prependTo('#posts').slideDown();
                 }
             });
         });

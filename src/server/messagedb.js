@@ -28,7 +28,7 @@ var saveMessage = function (db, message) {
     });
 };
 
-var getMessagesByName = function(db, name) {
+var getMessagesByName = function(db, name, callback) {
     var data = {
         'props': {
             'name': name
@@ -37,7 +37,17 @@ var getMessagesByName = function(db, name) {
 
     db.query("MATCH (u:user { name: {props}.name})<-[:TO]-(m:message) \
              RETURN m", data, function (err, results) {
-                 console.log(results);
+                 if (err) {
+                     return;
+                 }
+
+                 var messages = [];
+
+                 for (var i = 0; i < results.length; i++) {
+                    messages.push(results[i].m._data.data);
+                 }
+
+                 callback(messages);
     });
 }
 
