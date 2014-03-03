@@ -13,10 +13,15 @@ $(document).ready(function() {
                     data.pem = forge.pki.privateKeyToPem(privateKey);
                     sessionStorage[name] = JSON.stringify(data);
                     $('#passdialog').modal('hide');
+                    var primus = new Primus('http://localhost:8000?' + serialize(params), {transformer: 'engine.io'});
+                    primus.on('data', receiveMessage);
                 });
 
                 $('#passdialog').modal();
             });
+        } else {
+            var primus = new Primus('http://localhost:8000?' + serialize(params), {transformer: 'engine.io'});
+            primus.on('data', receiveMessage);
         }
 
         var params = {
@@ -24,8 +29,6 @@ $(document).ready(function() {
             'token': token
         };
 
-        var primus = new Primus('http://localhost:8000?' + serialize(params), {transformer: 'engine.io'});
-        primus.write({'name': name});
 
         $('form').submit(function(event) {
             var message = $('#message').val();
@@ -84,7 +87,7 @@ $(document).ready(function() {
             event.preventDefault();
         });
 
-        primus.on('data', function (data) {
+        var receiveMessage = function(data) {
             var localdata = JSON.parse(sessionStorage[name]);
             var BigInteger = forge.jsbn.BigInteger;
             var pem = localdata.pem;
@@ -111,7 +114,8 @@ $(document).ready(function() {
                     $(post).hide().prependTo('#posts').slideDown();
                 }
             });
-        });
+        };
+
     });
 
 });
