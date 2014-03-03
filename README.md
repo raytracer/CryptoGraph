@@ -1,5 +1,7 @@
 # CryptoGraph
 
+![Image](cryptograph.png?raw=true)
+
 CryptoGraph is an experimental social network that is able to deliver messages using an end-to-end encryption. It uses a Neo4j database as its backend. The complete application is written in javascript using express on the backend.
 
 The following libraries are used (for a complete list see package.json):
