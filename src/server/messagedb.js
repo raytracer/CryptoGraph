@@ -4,6 +4,8 @@ var saveMessage = function (db, message) {
             'name': message.name,
             'message': message.message,
             'from': message.from,
+            'time': message.time,
+            'read': message.read,
             'signature': message.signature
         }
     };
@@ -28,15 +30,16 @@ var saveMessage = function (db, message) {
     });
 };
 
-var getMessagesByName = function(db, name, callback) {
+var getMessagesByName = function(db, name, read, callback) {
     var data = {
         'props': {
-            'name': name
+            'name': name,
+            'read': read
         }
     };
 
-    db.query("MATCH (u:user { name: {props}.name})<-[:TO]-(m:message) \
-             RETURN m", data, function (err, results) {
+    db.query("MATCH (u:user { name: {props}.name})<-[:TO]-(m:message { read: {props}.read}) \
+             RETURN m ORDER BY m.time DESC", data, function (err, results) {
                  if (err) {
                      return;
                  }

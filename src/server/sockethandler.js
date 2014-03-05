@@ -31,7 +31,7 @@ var startPrimus = function (server, db) {
                     sparks[spark.id] = spark;
                 }
 
-                mdb.getMessagesByName(db, username, function (messages) {
+                mdb.getMessagesByName(db, username, true, function (messages) {
                     for (var i = 0; i < messages.length; i++) {
                         spark.write(messages[i]);
                     }
@@ -43,14 +43,18 @@ var startPrimus = function (server, db) {
                             var name = data.messages[i].name;
                             var allsparks = nameToSparkId[name];
 
+                            var message = data.messages[i];
+                            message.signature = data.signature;
+                            message.read = false;
+                            message.from = username;
+                            message.time = (new Date()).getTime();
+
                             if (allsparks !== undefined) {
                                 for (var j = 0; j < allsparks.length; j++) {
                                     var spark = sparks[allsparks[j]];
-                                    var message = data.messages[i];
-                                    message.signature = data.signature;
-                                    message.from = username;
-
                                     spark.write(message);
+
+                                    message.read = true;
                                 }
                             }
 
