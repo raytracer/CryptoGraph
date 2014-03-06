@@ -5,11 +5,7 @@ $(document).ready(function() {
         var user = $('#user').val();
         var pass = $('#pass').val();
 
-        var md = forge.md.sha256.create();
-        md.update(pass);
-        var hashed = md.digest().toHex().toString();
-
-        $.post('/login', {'user': user, 'pass': hashed}, function(data) {
+        $.post('/login', {'user': user, 'pass': pass}, function(data) {
             if (data === true) {
                 window.location.replace('/');
             } else {

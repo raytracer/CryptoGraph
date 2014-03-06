@@ -5,11 +5,11 @@ $(document).ready(function() {
         $('#success').hide();
 
         var user = $('#user').val(),
-            pass1 = $('#pass1').val(),
-            pass2 = $('#pass2').val();
+            passAuth = $('#passAuth').val(),
+            passEncrypt = $('#passEncrypt').val();
 
-        if (pass1 !== pass2) {
-            $('#error').html("<strong>Error!</strong> Passwords don't match!");
+        if (passAuth === passEncrypt) {
+            $('#error').html("<strong>Error!</strong> Passwords should not be equal!");
             $('#error').show();
             event.preventDefault();
             return;
@@ -23,22 +23,17 @@ $(document).ready(function() {
             }
 
             $('#info').show();
-
-            var md = forge.md.sha256.create();
-            md.update(pass1);
-            var hashed = md.digest().toHex().toString();
-
             var rsa = forge.pki.rsa;
 
             rsa.generateKeyPair({bits: 2048, workers: 4}, function (error, keypair) {
                 var n = keypair.privateKey.n.toString();
                 var e = keypair.privateKey.e.toString();
 
-                var pem = forge.pki.encryptRsaPrivateKey(keypair.privateKey, pass1);
+                var pem = forge.pki.encryptRsaPrivateKey(keypair.privateKey, passEncrypt);
 
                 var data = {
                     'user': user,
-                    'pass': hashed,
+                    'pass': passAuth,
                     'n': n,
                     'e': e,
                     'pem': pem,
