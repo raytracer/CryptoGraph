@@ -98,7 +98,7 @@ $(document).ready(function() {
 
 
                 $.when.apply(null, deferredRequests).done(function() {
-                    primus.write({'messages': messages,
+                    primus.substream('messageStream').write({'messages': messages,
                                   'signature': signature});
                 });
 
@@ -117,7 +117,8 @@ $(document).ready(function() {
                     sessionStorage[name] = JSON.stringify(data);
                     $('#passdialog').modal('hide');
                     var primus = new Primus('http://localhost:8000?' + serialize(params), {transformer: 'engine.io'});
-                    primus.on('data', receiveMessage);
+                    var messageStream = primus.substream('messageStream');
+                    messageStream.on('data', receiveMessage);
                     $('form').submit(createSubmit(primus));
                 });
 
@@ -125,7 +126,8 @@ $(document).ready(function() {
             });
         } else {
             var primus = new Primus('http://localhost:8000?' + serialize(params), {transformer: 'engine.io'});
-            primus.on('data', receiveMessage);
+            var messageStream = primus.substream('messageStream');
+            messageStream.on('data', receiveMessage);
             $('form').submit(createSubmit(primus));
         }
 

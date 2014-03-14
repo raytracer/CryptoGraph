@@ -4,6 +4,7 @@ var Primus = require('primus'),
 
 var startPrimus = function (server, db) {
     var primus = new Primus(server, {transformer: 'engine.io'});
+    primus.use('substream', require('substream'));
 
     //TODO: far from ideal (is there no getById in primus?)
     var nameToSparkId = {};
@@ -13,6 +14,7 @@ var startPrimus = function (server, db) {
     primus.on('connection', function connection(spark) {
         var username = spark.query.name;
         var token = spark.query.token;
+        var messageStream = spark.substream('messageStream');
 
         if (username !== undefined && token !== undefined) {
             jwt.verify(token, 'debug_secret', function(err, decoded) {
@@ -33,7 +35,7 @@ var startPrimus = function (server, db) {
 
                 mdb.getMessagesByName(db, username, true, function (messages) {
                     for (var i = 0; i < messages.length; i++) {
-                        spark.write(messages[i]);
+                        spark.substream('messageStream').write(messages[i]);
                     }
                 });
 
@@ -52,7 +54,7 @@ var startPrimus = function (server, db) {
                             if (allsparks !== undefined) {
                                 for (var j = 0; j < allsparks.length; j++) {
                                     var spark = sparks[allsparks[j]];
-                                    spark.write(message);
+                                    spark.substream('messageStream').write(message);
 
                                     message.read = true;
                                 }
@@ -63,7 +65,7 @@ var startPrimus = function (server, db) {
                     }
                 };
 
-                spark.on('data', sendMessage);
+                messageStream.on('data', sendMessage);
 
                 spark.on('end', function () {
                     try {

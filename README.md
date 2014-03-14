@@ -10,7 +10,7 @@ The following libraries are used (for a complete list see package.json):
 - [forge](https://github.com/digitalbazaar/forge) - the main library responsible for the encryption
 - [passportjs](http://passportjs.org/) - used to authenticate the normal HTTP requests NOT used for websocket authentication
 - [node-jsonwebtoken](https://github.com/auth0/node-jsonwebtoken) - used to authenticate the websocket connection
-- [Twitter Bootstrap](http://getbootstrap.com) - for frontend styling and functionality 
+- [Twitter Bootstrap](http://getbootstrap.com) - for frontend styling and functionality
 - [Neo4j](http://www.neo4j.org/) - popular Graph database
 
 ## Security

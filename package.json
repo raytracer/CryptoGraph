@@ -11,7 +11,8 @@
     "passport": "0.2.0",
     "passport-local": "0.1.6",
     "ejs": "0.8.5",
-    "jsonwebtoken": "~0.1.0"
+    "jsonwebtoken": "~0.1.0",
+    "substream": "0.0.2"
   },
   "devDependencies": {
     "gulp-util": "~2.2.14",
