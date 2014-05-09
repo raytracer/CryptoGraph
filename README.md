@@ -13,6 +13,10 @@ The following libraries are used (for a complete list see package.json):
 - [Twitter Bootstrap](http://getbootstrap.com) - for frontend styling and functionality
 - [Neo4j](http://www.neo4j.org/) - popular Graph database
 
+## Screenshot
+
+![Image](screenshot.png?raw=true)
+
 ## Security
 
 CryptoGraph is still a very early alpha (mainly for test purposes). It works by performing the following steps:
