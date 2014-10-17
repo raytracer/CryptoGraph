@@ -138,7 +138,18 @@ app.post('/user/create', function(req, res){
 });
 
 app.post('/user/exists', function(req, res){
-    res.json(false);
+    var data = {
+        "props": {
+            'name': req.user
+        }
+    };
+    db.query('MATCH (u:user {name: {props}.name}) RETURN u', data, function (err, results) {
+        if (err || results.length < 1) {
+            res.json(false);
+        } else {
+            res.json(true);
+        }
+    });
 });
 
 

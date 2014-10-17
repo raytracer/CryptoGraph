@@ -8,6 +8,17 @@ var serialize = function(obj) {
 }
 
 $(document).ready(function() {
+	$('#recipients').tokenfield();
+
+	function PostViewModel() {
+		this.posts = ko.observableArray([]);
+		this.slideElement = function(elem) { if (elem.nodeType === 1) $(elem).hide().slideDown() }
+	}
+
+	var viewModel = new PostViewModel();
+
+	ko.applyBindings(viewModel);
+
     $.get('/user/getname', function (response) {
         var name = response.name;
         var token = response.token;
@@ -37,12 +48,8 @@ $(document).ready(function() {
 
                 if (publicKey.verify(md.digest().bytes(), data.signature)) {
                     var date = (new Date(data.time)).toLocaleString();
-                    var post = $('<li>').addClass('post');
-                    post.append($('<p>').append($('<strong>').text(data.from))
-                                        .append($('<span>').addClass('date').text(' - ' + date)));
-                    post.append($('<p>').text(message));
 
-                    $(post).hide().prependTo('#posts').slideDown();
+					viewModel.posts.unshift({name: data.from, date: ' - ' + date, content: message});
                 }
             });
         };
@@ -71,7 +78,7 @@ $(document).ready(function() {
                 md.update(message, 'utf8');
                 var signature = privateKey.sign(md);
 
-                var recipients = $('#recipients').val().split(/;+/);
+                var recipients = $('#recipients').val().split(/,+/);
                 recipients = recipients.filter(function(elem) {
                     return elem.match(/\s+/) === null && elem.length > 0;
                 });
