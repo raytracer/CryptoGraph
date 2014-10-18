@@ -7,17 +7,29 @@ var serialize = function(obj) {
   return str.join("&");
 }
 
-$(document).ready(function() {
-	$('#recipients').tokenfield();
 
-	function PostViewModel() {
-		this.posts = ko.observableArray([]);
-		this.slideElement = function(elem) { if (elem.nodeType === 1) $(elem).hide().slideDown() }
-	}
+$(document).ready(function() {
+    var Post = function(from, date, content) {
+        this.from = from;
+        this.date = date;
+        this.content = content;
+    }
+
+    Post.prototype.replyHandler = function() {
+        $('#recipients').tokenfield('setTokens', [this.from]);
+        $('#message').focus();
+    }
+
+    var PostViewModel = function() {
+        this.posts = ko.observableArray([]);
+        this.slideElement = function(elem) { if (elem.nodeType === 1) $(elem).hide().slideDown() }
+    }
 
 	var viewModel = new PostViewModel();
-
 	ko.applyBindings(viewModel);
+
+	$('#recipients').tokenfield();
+
 
     $.get('/user/getname', function (response) {
         var name = response.name;
@@ -49,7 +61,7 @@ $(document).ready(function() {
                 if (publicKey.verify(md.digest().bytes(), data.signature)) {
                     var date = (new Date(data.time)).toLocaleString();
 
-					viewModel.posts.unshift({name: data.from, date: ' - ' + date, content: message});
+					viewModel.posts.unshift(new Post(data.from, ' - ' + date, message));
                 }
             });
         };

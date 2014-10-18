@@ -12,6 +12,7 @@
 
     <!-- Bootstrap core CSS -->
     <link href="/css/bootstrap.min.css" rel="stylesheet">
+    <link href="/css/font-awesome.min.css" rel="stylesheet">
     <link href="/css/bootstrap-tokenfield.min.css" rel="stylesheet">
 
     <!-- Custom styles for this template -->
@@ -70,8 +71,9 @@
 				<script type="text/html" id="post-template">
 					<li class="post">
 						<p>
-							<strong data-bind="text: name"></strong>
+							<strong data-bind="text: from"></strong>
 							<span class="date" data-bind="text: date"></span>
+							<a class="reply" href="#" data-bind="click: replyHandler"><i class="fa fa-reply "></i> reply</a>
 						</p>
 						<p data-bind="text: content"></p>
 					</li>
