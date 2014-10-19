@@ -9,27 +9,58 @@ var serialize = function(obj) {
 
 
 $(document).ready(function() {
-    var Post = function(from, date, content) {
+    var Post = function(from, date, content, recipients, name) {
         this.from = from;
         this.date = date;
         this.content = content;
+        this.recipients = recipients;
+        this.name = name;
     }
 
     Post.prototype.replyHandler = function() {
-        $('#recipients').tokenfield('setTokens', [this.from]);
+        var replyRecipients = this.recipients.slice();
+
+        if (this.name !== this.from) {
+            replyRecipients.splice(replyRecipients.indexOf(name), 1);
+            replyRecipients.push(this.from);
+        }
+
+        $('#recipients').tokenfield('setTokens', replyRecipients);
         $('#message').focus();
     }
 
     var PostViewModel = function() {
         this.posts = ko.observableArray([]);
+        this.filter = ko.observableArray([]);
         this.slideElement = function(elem) { if (elem.nodeType === 1) $(elem).hide().slideDown() }
+        this.filteredPosts = ko.pureComputed(function() {
+            var filter = this.filter();
+
+            if (filter.length < 1) {
+                return this.posts();
+            }
+
+            return ko.utils.arrayFilter(this.posts(), function(post) {
+                for (var i = 0; i < filter.length; i++) {
+                    if (post.from === filter[i].value) return true;
+                    if (post.recipients.indexOf(filter[i].value) !== -1) return true;
+                }
+                return false;
+            });
+        }, this);
     }
 
-	var viewModel = new PostViewModel();
+	viewModel = new PostViewModel();
 	ko.applyBindings(viewModel);
 
 	$('#recipients').tokenfield();
+	$('#filter').tokenfield();
 
+    $('#filter').on('tokenfield:createdtoken', function (e) {
+        viewModel.filter($('#filter').tokenfield('getTokens'));
+    }).on('tokenfield:removedtoken', function (e) {
+        viewModel.filter($('#filter').tokenfield('getTokens'));
+    });
 
     $.get('/user/getname', function (response) {
         var name = response.name;
@@ -61,7 +92,7 @@ $(document).ready(function() {
                 if (publicKey.verify(md.digest().bytes(), data.signature)) {
                     var date = (new Date(data.time)).toLocaleString();
 
-					viewModel.posts.unshift(new Post(data.from, ' - ' + date, message));
+					viewModel.posts.unshift(new Post(data.from, ' - ' + date, message, data.recipients, name));
                 }
             });
         };
@@ -118,7 +149,7 @@ $(document).ready(function() {
 
                 $.when.apply(null, deferredRequests).done(function() {
                     primus.substream('messageStream').write({'messages': messages,
-                                  'signature': signature});
+                                  'signature': signature, 'recipients': recipients});
                 });
 
                 event.preventDefault();
@@ -140,7 +171,9 @@ $(document).ready(function() {
                     messageStream.on('data', receiveMessage);
                     $('form').submit(createSubmit(primus));
                 });
-
+                $('#passdialog').on('shown.bs.modal', function () {
+                    $('#pass').focus();
+                })
                 $('#passdialog').modal();
             });
         } else {

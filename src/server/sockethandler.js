@@ -18,6 +18,7 @@ var startPrimus = function (server, db) {
 
         if (username !== undefined && token !== undefined) {
             jwt.verify(token, 'debug_secret', function(err, decoded) {
+                console.log("i was here" + username);
                 if (err || decoded.name !== username) {
                     spark.end();
                     return;
@@ -50,6 +51,7 @@ var startPrimus = function (server, db) {
                             message.read = false;
                             message.from = username;
                             message.time = (new Date()).getTime();
+                            message.recipients = data.recipients;
 
                             if (allsparks !== undefined) {
                                 for (var j = 0; j < allsparks.length; j++) {

@@ -42,5 +42,6 @@ body {
     display: none;
 }
 p.message {
+    padding-top: 10px;
     text-align: center;
 }

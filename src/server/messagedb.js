@@ -1,9 +1,9 @@
 var saveMessage = function (db, message) {
     var messageNode = {
         'props': {
-            'name': message.name,
             'message': message.message,
             'from': message.from,
+            'recipients': message.recipients,
             'time': message.time,
             'read': message.read,
             'signature': message.signature
@@ -18,14 +18,15 @@ var saveMessage = function (db, message) {
         var relationshipTo = {
             'props': {
                 'name': message.name,
+                'from': message.from,
                 'id': results[0].id
             }
         };
 
-        db.query("MATCH (m:message),(u:user) \
-                  WHERE id(m) = {props}.id AND u.name = {props}.name \
-                  CREATE (m)-[r:TO]->(u) \
-                  RETURN r", relationshipTo, function (err, results) {
+        db.query("MATCH (m:message),(u:user),(v:user) \
+                  WHERE id(m) = {props}.id AND u.name = {props}.name AND v.name = {props}.from\
+                  CREATE (v)-[s:FROM]->(m)-[r:TO]->(u) \
+                  RETURN r,s", relationshipTo, function (err, results) {
         });
     });
 };
