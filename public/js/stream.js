@@ -31,17 +31,22 @@ $(document).ready(function() {
     }
 
     var PostViewModel = function() {
+		this.ids = {};
         this.posts = ko.observableArray([]);
         this.filter = ko.observableArray([]);
         this.slideElement = function(elem) { if (elem.nodeType === 1) $(elem).hide().slideDown() }
         this.filteredPosts = ko.pureComputed(function() {
             var filter = this.filter();
 
+			var posts = this.posts().sort(function(l,r) {
+				return l.time <= r.time ? 1 : -1;
+			});
+
             if (filter.length < 1) {
-                return this.posts();
+                return posts;
             }
 
-            return ko.utils.arrayFilter(this.posts(), function(post) {
+            return ko.utils.arrayFilter(posts, function(post) {
                 for (var i = 0; i < filter.length; i++) {
                     if (post.from === filter[i].value) return true;
                     if (post.recipients.indexOf(filter[i].value) !== -1) return true;
@@ -90,7 +95,9 @@ $(document).ready(function() {
 
                 var publicKey = forge.pki.setRsaPublicKey(new BigInteger(pk.n), new BigInteger(pk.e));
 
-                if (publicKey.verify(md.digest().bytes(), data.signature)) {
+                if (publicKey.verify(md.digest().bytes(), data.signature)
+					&& viewModel.ids[data.id] === undefined) {
+					viewModel.ids[data.id] = data.id;
 					viewModel.posts.unshift(new Post(data.from, data.time, message, data.recipients, name));
                 }
             });
