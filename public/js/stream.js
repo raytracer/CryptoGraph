@@ -9,9 +9,10 @@ var serialize = function(obj) {
 
 
 $(document).ready(function() {
-    var Post = function(from, date, content, recipients, name) {
+    var Post = function(from, time, content, recipients, name) {
         this.from = from;
-        this.date = date;
+        this.time = time;
+        this.dateString = (new Date(time)).toLocaleString();
         this.content = content;
         this.recipients = recipients;
         this.name = name;
@@ -90,9 +91,7 @@ $(document).ready(function() {
                 var publicKey = forge.pki.setRsaPublicKey(new BigInteger(pk.n), new BigInteger(pk.e));
 
                 if (publicKey.verify(md.digest().bytes(), data.signature)) {
-                    var date = (new Date(data.time)).toLocaleString();
-
-					viewModel.posts.unshift(new Post(data.from, ' - ' + date, message, data.recipients, name));
+					viewModel.posts.unshift(new Post(data.from, data.time, message, data.recipients, name));
                 }
             });
         };

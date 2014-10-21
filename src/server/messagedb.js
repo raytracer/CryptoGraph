@@ -40,7 +40,7 @@ var getMessagesByName = function(db, name, read, callback) {
     };
 
     db.query("MATCH (u:user { name: {props}.name})<-[:TO]-(m:message { read: {props}.read}) \
-             RETURN m ORDER BY m.time", data, function (err, results) {
+             RETURN m, id(m) as id ORDER BY m.time", data, function (err, results) {
                  if (err) {
                      return;
                  }
@@ -48,7 +48,9 @@ var getMessagesByName = function(db, name, read, callback) {
                  var messages = [];
 
                  for (var i = 0; i < results.length; i++) {
-                    messages.push(results[i].m._data.data);
+					var message = results[i].m._data.data;
+					message.id = results[i].id;
+                    messages.push(message);
                  }
 
                  callback(messages);

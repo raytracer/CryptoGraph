@@ -2,6 +2,7 @@
 
 var express = require('express'),
 app = express(),
+compression = require('compression'),
 bodyParser = require('body-parser'),
 cookieParser = require('cookie-parser'),
 session = require('express-session'),
@@ -15,13 +16,13 @@ var neo4j = require('neo4j');
 var db = new neo4j.GraphDatabase('http://localhost:7474');
 
 
+app.use(compression());
 app.set('views', __dirname + '/public/views');
 app.engine('html', require('ejs').renderFile);
 app.use(express.static(__dirname + '/public'));
 app.use(bodyParser.json());
 app.use(bodyParser.urlencoded({extended: true}));
 app.use(cookieParser());
-//app.use(express.methodOverride());
 app.use(session({ secret: 'keyboard cat', saveUninitialized: true,
                  resave: true}));
 // Initialize Passport!  Also use passport.session() middleware, to support

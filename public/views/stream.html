@@ -60,7 +60,7 @@
                     <button type="submit" class="btn btn-primary">Send</button>
                 </form>
                 <div id="filter-container">
-                    <input type="text" class="form-control" id="filter" placeholder="Filter your messages with user names">
+                    <input type="text" class="form-control" id="filter" placeholder="Filter your messages by user name">
                 </div>
 				<ul id="posts" data-bind="template: { name: 'post-template', foreach: filteredPosts, afterAdd: slideElement}"></ul>
 
@@ -68,7 +68,7 @@
 					<li class="post">
 						<p>
 							<strong data-bind="text: from"></strong>
-							<span class="date" data-bind="text: date"></span>
+							<span class="date" data-bind="text: dateString"></span>
 							<a class="reply" href="#" data-bind="click: replyHandler"><i class="fa fa-reply "></i> reply</a>
 						</p>
 						<p data-bind="text: content"></p>
