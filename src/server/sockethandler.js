@@ -18,7 +18,6 @@ var startPrimus = function (server, db) {
 
         if (username !== undefined && token !== undefined) {
             jwt.verify(token, 'debug_secret', function(err, decoded) {
-                console.log("i was here" + username);
                 if (err || decoded.name !== username) {
                     spark.end();
                     return;
