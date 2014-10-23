@@ -10,10 +10,13 @@ crypto = require('crypto'),
 passport = require('passport'),
 LocalStrategy = require('passport-local').Strategy,
 sockethandler = require('./src/server/sockethandler'),
-jwt = require('jsonwebtoken');
+jwt = require('jsonwebtoken'),
+fs = require('fs'),
+neo4j = require('neo4j');
 
-var neo4j = require('neo4j');
-var db = new neo4j.GraphDatabase('http://localhost:7474');
+var dbcredentials = fs.readFileSync('dbcredentials.conf').toString();
+dbcredentials = dbcredentials.slice(0, dbcredentials.length - 1);
+var db = new neo4j.GraphDatabase(dbcredentials);
 
 
 app.use(compression());

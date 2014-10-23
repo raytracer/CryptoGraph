@@ -106,6 +106,15 @@ $(document).ready(function() {
         var createSubmit = function(primus) {
             return function(event) {
                 var message = $('#message').val();
+				
+				if (message.length === 0) {
+					event.preventDefault();
+					return;
+				}
+
+				$('#message').val('');
+				$('#message').focus();
+
                 var BigInteger = forge.jsbn.BigInteger;
 
                 var data = JSON.parse(sessionStorage[name]);
@@ -172,10 +181,10 @@ $(document).ready(function() {
                     data.pem = forge.pki.privateKeyToPem(privateKey);
                     sessionStorage[name] = JSON.stringify(data);
                     $('#passdialog').modal('hide');
-                    var primus = new Primus('http://localhost:8000?' + serialize(params), {transformer: 'engine.io'});
+                    var primus = new Primus('http://' + document.domain + ':8000?' + serialize(params), {transformer: 'engine.io'});
                     var messageStream = primus.substream('messageStream');
                     messageStream.on('data', receiveMessage);
-                    $('form').submit(createSubmit(primus));
+                    $('#sendform').submit(createSubmit(primus));
                 });
                 $('#passdialog').on('shown.bs.modal', function () {
                     $('#pass').focus();
