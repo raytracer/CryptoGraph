@@ -106,7 +106,7 @@ $(document).ready(function() {
         var createSubmit = function(primus) {
             return function(event) {
                 var message = $('#message').val();
-				
+
 				if (message.length === 0) {
 					event.preventDefault();
 					return;
@@ -171,20 +171,35 @@ $(document).ready(function() {
             };
         };
 
+        var primus;
+
+        var startPrimus = function() {
+            var primus = new Primus('http://' + document.domain + ':8000?' + serialize(params), {transformer: 'engine.io'});
+            var messageStream = primus.substream('messageStream');
+            messageStream.on('data', receiveMessage);
+            $('#sendform').submit(createSubmit(primus));
+
+            return primus;
+        };
+
+        if (localStorage[name] !== undefined) sessionStorage[name] = localStorage[name];
+
         if (sessionStorage[name] === undefined) {
             $.get('/user/getdata', function (data) {
                 $('#decrypt').on('click', function (e) {
                     var password = $('#pass').val();
+                    var trust = $('#trust').prop('checked');
                     var pem = data.pem;
 
                     var privateKey = forge.pki.decryptRsaPrivateKey(pem, password);
                     data.pem = forge.pki.privateKeyToPem(privateKey);
                     sessionStorage[name] = JSON.stringify(data);
+
+                    if (trust) localStorage[name] = sessionStorage[name];
+
                     $('#passdialog').modal('hide');
-                    var primus = new Primus('http://' + document.domain + ':8000?' + serialize(params), {transformer: 'engine.io'});
-                    var messageStream = primus.substream('messageStream');
-                    messageStream.on('data', receiveMessage);
-                    $('#sendform').submit(createSubmit(primus));
+
+                    primus = startPrimus();
                 });
                 $('#passdialog').on('shown.bs.modal', function () {
                     $('#pass').focus();
@@ -192,10 +207,7 @@ $(document).ready(function() {
                 $('#passdialog').modal();
             });
         } else {
-            var primus = new Primus('http://localhost:8000?' + serialize(params), {transformer: 'engine.io'});
-            var messageStream = primus.substream('messageStream');
-            messageStream.on('data', receiveMessage);
-            $('form').submit(createSubmit(primus));
+            primus = startPrimus();
         }
 
     });
