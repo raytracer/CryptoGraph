@@ -23,5 +23,9 @@
     "gulp-uglify": "0.2.1",
     "gulp-livereload": "~1.1.1",
     "gulp-nodemon": "~0.1.2"
-  }
+  },
+  "scripts": {
+	  "start": "node app.js"
+  },
+  "main": "app.js"
 }
