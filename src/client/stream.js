@@ -173,7 +173,7 @@ $(document).ready(function() {
 
         var primus;
 
-		var port = location.protocol === 'https' ? '8443' : '8000';
+		var port = location.protocol === 'https:' ? '8443' : '8000';
 
         var startPrimus = function() {
             var primus = new Primus(location.protocol + '//' + document.domain + ':' + port + '?' + serialize(params), {transformer: 'engine.io'});
