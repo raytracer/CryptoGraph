@@ -174,7 +174,7 @@ $(document).ready(function() {
         var primus;
 
         var startPrimus = function() {
-            var primus = new Primus('http://' + document.domain + ':8000?' + serialize(params), {transformer: 'engine.io'});
+            var primus = new Primus(location.protocol + '//' + document.domain + ':8000?' + serialize(params), {transformer: 'engine.io'});
             var messageStream = primus.substream('messageStream');
             messageStream.on('data', receiveMessage);
             $('#sendform').submit(createSubmit(primus));
