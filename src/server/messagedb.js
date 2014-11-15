@@ -31,15 +31,14 @@ var saveMessage = function (db, message) {
     });
 };
 
-var getMessagesByName = function(db, name, read, callback) {
+var getMessagesByName = function(db, name, callback) {
     var data = {
         'props': {
-            'name': name,
-            'read': read
+            'name': name
         }
     };
 
-    db.query("MATCH (u:user { name: {props}.name})<-[:TO]-(m:message { read: {props}.read}) \
+    db.query("MATCH (u:user { name: {props}.name})<-[:TO]-(m:message) \
              RETURN m, id(m) as id ORDER BY m.time", data, function (err, results) {
                  if (err) {
                      return;

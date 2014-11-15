@@ -33,7 +33,7 @@ var startPrimus = function (server, db) {
                     sparks[spark.id] = spark;
                 }
 
-                mdb.getMessagesByName(db, username, true, function (messages) {
+                mdb.getMessagesByName(db, username, function (messages) {
                     for (var i = 0; i < messages.length; i++) {
                         spark.substream('messageStream').write(messages[i]);
                     }

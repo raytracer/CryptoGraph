@@ -136,7 +136,7 @@ $(document).ready(function() {
                 md.update(message, 'utf8');
                 var signature = privateKey.sign(md);
 
-                var recipients = $('#recipients').val().split(/,+/);
+                var recipients = $.map($("#recipients").tokenfield("getTokens"), function(o) {return o.value;});
                 recipients = recipients.filter(function(elem) {
                     return elem.match(/\s+/) === null && elem.length > 0;
                 });
