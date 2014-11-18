@@ -13,8 +13,27 @@ function uniqueArray(arr) {
 	});
 }
 
+function initUi() {
+	$("#sidebar-button").click(function(e) {
+		$('.row-offcanvas').toggleClass('active');
+	});
+
+	var mainCanvas = document.getElementById("stream");
+	var sidebar = document.getElementById("sidebar");
+    
+    Hammer(mainCanvas).on("swiperight", function() {
+		$('.row-offcanvas').addClass('active');
+    });
+
+    Hammer(sidebar).on("swipeleft", function() {
+		$('.row-offcanvas').removeClass('active');
+    });
+}
+
 
 $(document).ready(function() {
+	initUi();
+
     var Post = function(from, time, content, recipients, name) {
         this.from = from;
         this.time = time;
