@@ -24,8 +24,9 @@ $(document).ready(function() {
 
             $('#info').show();
             var rsa = forge.pki.rsa;
+            var cores = navigator.hardwareConcurrency || 4;
 
-            rsa.generateKeyPair({bits: 2048, workers: 4}, function (error, keypair) {
+            rsa.generateKeyPair({bits: 2048, workers: cores}, function (error, keypair) {
                 var n = keypair.privateKey.n.toString();
                 var e = keypair.privateKey.e.toString();
 

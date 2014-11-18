@@ -7,6 +7,12 @@ var serialize = function(obj) {
   return str.join("&");
 }
 
+function uniqueArray(arr) {
+	return arr.filter(function(item, pos, self) {
+		return self.indexOf(item) == pos;
+	});
+}
+
 
 $(document).ready(function() {
     var Post = function(from, time, content, recipients, name) {
@@ -19,10 +25,10 @@ $(document).ready(function() {
     }
 
     Post.prototype.replyHandler = function() {
-        var replyRecipients = this.recipients.slice();
+        var replyRecipients = uniqueArray(this.recipients.slice());
 
         if (this.name !== this.from) {
-            replyRecipients.splice(replyRecipients.indexOf(name), 1);
+            replyRecipients.splice(replyRecipients.indexOf(this.name), 1);
             replyRecipients.push(this.from);
         }
 
@@ -49,7 +55,8 @@ $(document).ready(function() {
             return ko.utils.arrayFilter(posts, function(post) {
                 for (var i = 0; i < filter.length; i++) {
                     if (post.from === filter[i].value) return true;
-                    if (post.recipients.indexOf(filter[i].value) !== -1) return true;
+                    if (post.from === post.name &&
+						post.recipients.indexOf(filter[i].value) !== -1) return true;
                 }
                 return false;
             });
