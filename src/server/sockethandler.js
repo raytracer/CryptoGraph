@@ -49,6 +49,7 @@ var startPrimus = function (server, db) {
                             message.signature = data.signature;
                             message.read = false;
                             message.from = username;
+							message.to = name;
                             message.time = (new Date()).getTime();
                             message.recipients = data.recipients;
 

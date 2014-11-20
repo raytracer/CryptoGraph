@@ -12,11 +12,15 @@ LocalStrategy = require('passport-local').Strategy,
 sockethandler = require('./src/server/sockethandler'),
 jwt = require('jsonwebtoken'),
 fs = require('fs'),
-neo4j = require('neo4j');
+mongodb = require('mongodb');
 
-var dbcredentials = fs.readFileSync('dbcredentials.conf').toString();
-dbcredentials = dbcredentials.slice(0, dbcredentials.length - 1);
-var db = new neo4j.GraphDatabase(dbcredentials);
+var db = undefined;
+
+MongoClient.connect("mongodb://localhost:27017/cryptograph", function(err, db_async) {
+	if (!err) {
+		db = db_async;	
+	}
+});
 
 
 app.use(compression());
@@ -56,33 +60,28 @@ app.get('/user/getname', ensureAuthenticated, function(req, res){
 });
 
 app.get('/user/getdata', ensureAuthenticated, function(req, res){
-    var data = {
-        "props": {
-            'name': req.user
-        }
-    };
-    db.query('MATCH (u:user {name: {props}.name}) RETURN u', data, function (err, results) {
-        if (err || results.length < 1) {
+	db.users.findOne({name: name}, function(err, result) {
+		if (err || result === undefined) {
             res.json(false);
-        } else {
-            res.json(results[0].u._data.data);
-        }
-    });
+		} else {
+			res.json(result);
+		}
+	});
 });
 
 app.post('/user/getpublickey', ensureAuthenticated, function(req, res){
-    var data = {
-        "props": {
-            'name': req.body.name
-        }
-    };
-    db.query('MATCH (u:user {name: {props}.name}) RETURN u.n as n, u.e as e', data, function (err, results) {
-        if (err || results.length < 1) {
+	db.users.findOne({name: name}, function(err, result) {
+		if (err || result === undefined) {
             res.json(false);
-        } else {
-            res.json(results[0]);
-        }
-    });
+		} else {
+			prunedResult = {
+				n: result.n,
+				e: result.e
+			};
+
+			res.json(prunedResult);
+		}
+	});
 });
 
 app.get('/login', function(req, res){
@@ -90,27 +89,22 @@ app.get('/login', function(req, res){
 });
 
 app.post('/login', function(req, res){
-    var data = {
-        "props": {
-            'name': req.body.user
-        }
-    };
+	var name = req.body.user;
 
-    db.query('MATCH (u:user {name: {props}.name}) RETURN u.name as name, u.password as password, u.salt as salt', data, function (err, results) {
-        if (err || results.length < 1) {
+	db.users.findOne({name: name}, function(err, result) {
+		if (err || result === undefined) {
             res.json(false);
-        } else {
-            var salt = results[0].salt;
-            crypto.pbkdf2(req.body.pass, salt, 1000, 512, function(err, dk) {
-                if (dk.toString('hex') !== results[0].password) {
+		} else {
+            crypto.pbkdf2(req.body.pass, result.salt, 1000, 512, function(err, dk) {
+                if (dk.toString('hex') !== result.password) {
                     res.json(false);
                 } else {
-                    req.login(results[0].name, function(err) {});
+                    req.login(name, function(err) {});
                     res.json(true);
                 }
             });
-        }
-    });
+		}
+	});
 });
 
 app.get('/user/create', function(req, res){
@@ -120,43 +114,33 @@ app.get('/user/create', function(req, res){
 app.post('/user/create', function(req, res){
     var salt = crypto.randomBytes(128).toString('base64');
     crypto.pbkdf2(req.body.pass, salt, 1000, 512, function(err, dk) {
-        var data = {
-            "props": {
-                'name': req.body.user,
-                'password': dk.toString('hex'),
-                'salt': salt,
-                'e': req.body.e,
-                'n': req.body.n,
-                'pem': req.body.pem
-            }
+        var user = {
+			'name': req.body.user,
+			'password': dk.toString('hex'),
+			'salt': salt,
+			'e': req.body.e,
+			'n': req.body.n,
+			'pem': req.body.pem
         };
 
-        db.query('CREATE (u:user {props}) RETURN u.name as name', data, function (err, results) {
-            if (err || results.length < 1) {
-                res.json(false);
-            } else {
+		db.users.insert(user, function(err, results) {
+			if (err || results.length < 1) {
+				res.json(false);	
+			} else {
                 req.login(results[0].name, function(err) {});
                 res.json(results[0].name);
-            }
-        });
-    });
-
-
+			}
+		});
 });
 
 app.post('/user/exists', function(req, res){
-    var data = {
-        "props": {
-            'name': req.user
-        }
-    };
-    db.query('MATCH (u:user {name: {props}.name}) RETURN u', data, function (err, results) {
-        if (err || results.length < 1) {
+	db.users.findOne({name: req.user}, function(err, result) {
+		if (err || result === undefined) {
             res.json(false);
         } else {
             res.json(true);
         }
-    });
+	});
 });
 
 
