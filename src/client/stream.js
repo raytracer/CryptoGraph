@@ -105,7 +105,9 @@ $(document).ready(function() {
                 if (publicKey.verify(md.digest().bytes(), data.signature)
 					&& viewModel.ids[data._id] === undefined) {
 					viewModel.ids[data._id] = data._id;
-					viewModel.posts.unshift(new Post(data.from, data.time, message, data.recipients, name));
+					var safemessage = $('<div>').text(message).html();
+					safemessage = safemessage.replace(/(?:\r\n|\r|\n)/g, '<br />');
+					viewModel.posts.unshift(new Post(data.from, data.time, safemessage, data.recipients, name));
                 }
             });
         };
