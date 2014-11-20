@@ -14,13 +14,9 @@ jwt = require('jsonwebtoken'),
 fs = require('fs'),
 mongodb = require('mongodb');
 
-var db = undefined;
+var db = undefined,
+	usersCol = undefined;
 
-MongoClient.connect("mongodb://localhost:27017/cryptograph", function(err, db_async) {
-	if (!err) {
-		db = db_async;	
-	}
-});
 
 
 app.use(compression());
@@ -60,8 +56,8 @@ app.get('/user/getname', ensureAuthenticated, function(req, res){
 });
 
 app.get('/user/getdata', ensureAuthenticated, function(req, res){
-	db.users.findOne({name: name}, function(err, result) {
-		if (err || result === undefined) {
+	usersCol.findOne({name: req.user}, function(err, result) {
+		if (err || result === null) {
             res.json(false);
 		} else {
 			res.json(result);
@@ -70,11 +66,11 @@ app.get('/user/getdata', ensureAuthenticated, function(req, res){
 });
 
 app.post('/user/getpublickey', ensureAuthenticated, function(req, res){
-	db.users.findOne({name: name}, function(err, result) {
-		if (err || result === undefined) {
+	usersCol.findOne({name: req.body.name}, function(err, result) {
+		if (err || result === null) {
             res.json(false);
 		} else {
-			prunedResult = {
+			var prunedResult = {
 				n: result.n,
 				e: result.e
 			};
@@ -91,8 +87,8 @@ app.get('/login', function(req, res){
 app.post('/login', function(req, res){
 	var name = req.body.user;
 
-	db.users.findOne({name: name}, function(err, result) {
-		if (err || result === undefined) {
+	usersCol.findOne({name: name}, function(err, result) {
+		if (err || result === null) {
             res.json(false);
 		} else {
             crypto.pbkdf2(req.body.pass, result.salt, 1000, 512, function(err, dk) {
@@ -123,7 +119,7 @@ app.post('/user/create', function(req, res){
 			'pem': req.body.pem
         };
 
-		db.users.insert(user, function(err, results) {
+		usersCol.insert(user, function(err, results) {
 			if (err || results.length < 1) {
 				res.json(false);	
 			} else {
@@ -131,11 +127,17 @@ app.post('/user/create', function(req, res){
                 res.json(results[0].name);
 			}
 		});
+	});
 });
 
 app.post('/user/exists', function(req, res){
-	db.users.findOne({name: req.user}, function(err, result) {
-		if (err || result === undefined) {
+	if (usersCol === undefined) {
+		res.json(false);
+		return;
+	}
+
+	usersCol.findOne({name: req.user}, function(err, result) {
+		if (err || result === null) {
             res.json(false);
         } else {
             res.json(true);
@@ -150,7 +152,18 @@ function ensureAuthenticated(req, res, next) {
 }
 
 var server = require('http').createServer(app);
-sockethandler.startPrimus(server, db);
+
+mongodb.MongoClient.connect("mongodb://localhost:27017/cryptograph", function(err, db_async) {
+	if (!err) {
+		db = db_async;	
+		sockethandler.startPrimus(server, db);
+		db.createCollection("users", function(err, col) {
+			usersCol = col
+		});
+		db.createCollection("messages", function(err, col) {
+		});
+	}
+});
 
 var server_port = process.env.OPENSHIFT_NODEJS_PORT || 8000
 var server_ip_address = process.env.OPENSHIFT_NODEJS_IP || '127.0.0.1'
