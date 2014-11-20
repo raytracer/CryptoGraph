@@ -152,8 +152,11 @@ function ensureAuthenticated(req, res, next) {
 }
 
 var server = require('http').createServer(app);
+var mongo_url = process.env.OPENSHIFT_MONGODB_DB_URL || "mongodb://localhost:27017/"
 
-mongodb.MongoClient.connect("mongodb://localhost:27017/cryptograph", function(err, db_async) {
+mongo_url += "cryptograph";
+
+mongodb.MongoClient.connect(mongo_url, function(err, db_async) {
 	if (!err) {
 		db = db_async;	
 		sockethandler.startPrimus(server, db);
