@@ -2,7 +2,7 @@
 
 ![Image](cryptograph.png?raw=true)
 
-CryptoGraph is an experimental social network that is able to deliver messages using an end-to-end encryption. It uses a Neo4j database as its backend. The complete application is written in javascript using express on the backend.
+CryptoGraph is an experimental social network that is able to deliver messages using an end-to-end encryption. It uses a mongodb(moved from Neo4j) database as its backend. The complete application is written in javascript using express on the backend.
 
 The following libraries are used (for a complete list see package.json):
 
@@ -11,7 +11,7 @@ The following libraries are used (for a complete list see package.json):
 - [passportjs](http://passportjs.org/) - used to authenticate the normal HTTP requests NOT used for websocket authentication
 - [node-jsonwebtoken](https://github.com/auth0/node-jsonwebtoken) - used to authenticate the websocket connection
 - [Twitter Bootstrap](http://getbootstrap.com) - for frontend styling and functionality
-- [Neo4j](http://www.neo4j.org/) - popular Graph database
+- [mongodb](http://www.mongodb.org/) - popular Graph database
 
 ## Screenshot
 
