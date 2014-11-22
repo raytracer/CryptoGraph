@@ -121,7 +121,7 @@ app.post('/user/create', function(req, res){
 
 		usersCol.insert(user, function(err, results) {
 			if (err || results.length < 1) {
-				res.json(false);	
+				res.json(false);
 			} else {
                 req.login(results[0].name, function(err) {});
                 res.json(results[0].name);
@@ -145,6 +145,11 @@ app.post('/user/exists', function(req, res){
 	});
 });
 
+app.get('/logout', function(req, res){
+    req.logout();
+    res.redirect('/');
+});
+
 
 function ensureAuthenticated(req, res, next) {
     if (req.isAuthenticated()) { return next(); }
@@ -155,7 +160,7 @@ var server = require('http').createServer(app);
 
 mongodb.MongoClient.connect("mongodb://localhost:27017/cryptograph", function(err, db_async) {
 	if (!err) {
-		db = db_async;	
+		db = db_async;
 		sockethandler.startPrimus(server, db);
 		db.createCollection("users", function(err, col) {
 			usersCol = col
@@ -166,5 +171,5 @@ mongodb.MongoClient.connect("mongodb://localhost:27017/cryptograph", function(er
 });
 
 var server_port = process.env.OPENSHIFT_NODEJS_PORT || 8000
-var server_ip_address = process.env.OPENSHIFT_NODEJS_IP || '127.0.0.1'
+var server_ip_address = process.env.OPENSHIFT_NODEJS_IP || '0.0.0.0'
 server.listen(server_port, server_ip_address);
