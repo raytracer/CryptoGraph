@@ -15,7 +15,7 @@
    id="svg2"
    version="1.1"
    inkscape:version="0.48.4 r9939"
-   sodipodi:docname="locked.svg">
+   sodipodi:docname="cryptograph.svg">
   <defs
      id="defs4">
     <marker
@@ -77,7 +77,7 @@
        x2="-15"
        y2="362.36218"
        gradientUnits="userSpaceOnUse"
-       gradientTransform="translate(152.5,10.714286)" />
+       gradientTransform="translate(154.64286,15.535715)" />
     <filter
        inkscape:collect="always"
        id="filter4473">
@@ -94,12 +94,12 @@
      borderopacity="1.0"
      inkscape:pageopacity="0.0"
      inkscape:pageshadow="2"
-     inkscape:zoom="1.979899"
-     inkscape:cx="107.18229"
-     inkscape:cy="746.05337"
+     inkscape:zoom="3.959798"
+     inkscape:cx="81.602592"
+     inkscape:cy="720.89006"
      inkscape:document-units="px"
      inkscape:current-layer="layer1"
-     showgrid="false"
+     showgrid="true"
      inkscape:window-width="1920"
      inkscape:window-height="1017"
      inkscape:window-x="-8"
@@ -107,7 +107,18 @@
      inkscape:window-maximized="1">
     <inkscape:grid
        type="xygrid"
-       id="grid4383" />
+       id="grid4383"
+       empspacing="5"
+       visible="true"
+       enabled="true"
+       snapvisiblegridlinesonly="true" />
+    <inkscape:grid
+       type="xygrid"
+       id="grid3007"
+       empspacing="5"
+       visible="true"
+       enabled="true"
+       snapvisiblegridlinesonly="true" />
   </sodipodi:namedview>
   <metadata
      id="metadata7">
@@ -117,7 +128,7 @@
         <dc:format>image/svg+xml</dc:format>
         <dc:type
            rdf:resource="http://purl.org/dc/dcmitype/StillImage" />
-        <dc:title></dc:title>
+        <dc:title />
       </cc:Work>
     </rdf:RDF>
   </metadata>
@@ -138,47 +149,52 @@
        inkscape:export-ydpi="14.620793" />
     <path
        style="fill:none;stroke:#000000;stroke-width:3;stroke-linecap:butt;stroke-linejoin:miter;stroke-miterlimit:4;stroke-opacity:1;stroke-dasharray:none;marker-start:url(#DotM);marker-mid:url(#DotM);marker-end:url(#DotM)"
-       d="m 225.45182,341.65955 -86.0932,-14.59312"
+       d="m 230,332.36218 -90,-5"
        id="path3031"
        inkscape:connector-curvature="0"
        inkscape:export-filename="D:\cryptograph_ico.png"
        inkscape:export-xdpi="14.620793"
-       inkscape:export-ydpi="14.620793" />
+       inkscape:export-ydpi="14.620793"
+       sodipodi:nodetypes="cc" />
     <path
        style="fill:none;stroke:#000000;stroke-width:3;stroke-linecap:butt;stroke-linejoin:miter;stroke-miterlimit:4;stroke-opacity:1;stroke-dasharray:none;marker-start:url(#DotM);marker-mid:url(#DotM);marker-end:url(#DotM)"
-       d="M 195.57293,423.70985 139.35862,327.06643"
+       d="m 195,422.36218 -55,-95"
        id="path3029"
        inkscape:connector-curvature="0"
        inkscape:export-filename="D:\cryptograph_ico.png"
        inkscape:export-xdpi="14.620793"
-       inkscape:export-ydpi="14.620793" />
+       inkscape:export-ydpi="14.620793"
+       sodipodi:nodetypes="cc" />
     <path
        style="fill:none;stroke:#000000;stroke-width:3;stroke-linecap:butt;stroke-linejoin:miter;stroke-miterlimit:4;stroke-opacity:1;stroke-dasharray:none;marker-start:url(#DotM);marker-mid:url(#DotM);marker-end:url(#DotM)"
-       d="m 179.53326,249.37475 -40.17464,77.69168"
+       d="m 180,247.36218 -40,80 0,0 0,0"
        id="path3027"
        inkscape:connector-curvature="0"
        inkscape:export-filename="D:\cryptograph_ico.png"
        inkscape:export-xdpi="14.620793"
-       inkscape:export-ydpi="14.620793" />
+       inkscape:export-ydpi="14.620793"
+       sodipodi:nodetypes="cccc" />
     <path
        style="fill:none;stroke:#000000;stroke-width:3;stroke-linecap:butt;stroke-linejoin:miter;stroke-miterlimit:4;stroke-opacity:1;stroke-dasharray:none;marker-start:url(#DotM);marker-mid:url(#DotM);marker-end:url(#DotM)"
-       d="m 44.548175,333.06481 94.810445,-5.99838"
+       d="M 44.548175,333.06481 140,327.36218"
        id="path3023"
        inkscape:connector-curvature="0"
        inkscape:export-filename="D:\cryptograph_ico.png"
        inkscape:export-xdpi="14.620793"
-       inkscape:export-ydpi="14.620793" />
+       inkscape:export-ydpi="14.620793"
+       sodipodi:nodetypes="cc" />
     <path
        style="fill:none;stroke:#000000;stroke-width:3;stroke-linecap:butt;stroke-linejoin:miter;stroke-miterlimit:4;stroke-opacity:1;stroke-dasharray:none;marker-start:url(#DotM);marker-mid:url(#DotM);marker-end:url(#DotM)"
-       d="m 195.57293,423.70985 29.87889,-82.0503 -45.91856,-92.2848 -85.146094,0.37694 -49.838991,83.31312 35.938516,92.91621 z"
+       d="m 195,422.36218 35,-90 0,0 0,0 -50,-85 -85,0 L 44.548175,333.06481 80,422.36218 z"
        id="path3017"
        inkscape:connector-curvature="0"
        inkscape:export-filename="D:\cryptograph_ico.png"
        inkscape:export-xdpi="14.620793"
-       inkscape:export-ydpi="14.620793" />
+       inkscape:export-ydpi="14.620793"
+       sodipodi:nodetypes="ccccccccc" />
     <path
        style="fill:#d4aa00;fill-opacity:1;stroke:none;display:inline"
-       d="m 137.54062,293.44954 c -18.92521,0 -34.28125,17.98468 -34.28125,40.1875 0,0.32591 0.0247,0.64469 0.0312,0.96875 l 6.375,0 c -0.008,-0.32236 -0.0312,-0.64412 -0.0312,-0.96875 0,-18.09098 12.48588,-32.78125 27.90625,-32.78125 15.42037,0 27.9375,14.69027 27.9375,32.78125 0,0.32463 -0.0232,0.64639 -0.0312,0.96875 l 6.34375,0 c 0.007,-0.32396 0,-0.64293 0,-0.96875 0,-22.20282 -15.32479,-40.1875 -34.25,-40.1875 z"
+       d="m 139.68348,298.27097 c -18.92521,0 -34.28125,17.98468 -34.28125,40.1875 0,0.32591 0.0247,0.64469 0.0312,0.96875 l 6.375,0 c -0.008,-0.32236 -0.0312,-0.64412 -0.0312,-0.96875 0,-18.09098 12.48588,-32.78125 27.90625,-32.78125 15.42037,0 27.9375,14.69027 27.9375,32.78125 0,0.32463 -0.0232,0.64639 -0.0312,0.96875 l 6.34375,0 c 0.007,-0.32396 0,-0.64293 0,-0.96875 0,-22.20282 -15.32479,-40.1875 -34.25,-40.1875 z"
        id="path6273"
        inkscape:connector-curvature="0"
        inkscape:export-filename="D:\cryptograph_ico.png"
@@ -186,7 +202,7 @@
        inkscape:export-ydpi="14.620793" />
     <path
        style="fill:#ffffff;fill-opacity:0.42471044;stroke:none;display:inline;filter:url(#filter4473)"
-       d="m 136.71875,295.46875 c -18.64828,0.50373 -31.58178,19.5776 -31.4375,37.125 4.38208,0.86189 1.80218,-5.72083 3.46875,-8.4375 3.08198,-15.29874 18.66408,-28.82105 34.84375,-24.5625 14.66265,3.5004 23.71665,18.57346 23.875,33 4.72681,0.60363 0.9407,-6.69148 1.09375,-9.53125 -3.3614,-14.72453 -15.97436,-28.19041 -31.84375,-27.59375 z"
+       d="m 138.86161,300.29018 c -18.64828,0.50373 -31.58178,19.5776 -31.4375,37.125 4.38208,0.86189 1.80218,-5.72083 3.46875,-8.4375 3.08198,-15.29874 18.66408,-28.82105 34.84375,-24.5625 14.66265,3.5004 23.71665,18.57346 23.875,33 4.72681,0.60363 0.9407,-6.69148 1.09375,-9.53125 -3.3614,-14.72453 -15.97436,-28.19041 -31.84375,-27.59375 z"
        id="path4405"
        inkscape:connector-curvature="0"
        inkscape:export-filename="D:\cryptograph_ico.png"
@@ -194,15 +210,16 @@
        inkscape:export-ydpi="14.620793" />
     <path
        style="fill:none;stroke:#000000;stroke-width:3;stroke-linecap:butt;stroke-linejoin:miter;stroke-miterlimit:4;stroke-opacity:1;stroke-dasharray:none;marker-start:url(#DotM);marker-mid:url(#DotM);marker-end:url(#DotM)"
-       d="M 80.486691,425.98102 139.35862,327.06643 94.387166,249.75169"
+       d="m 80,422.36218 60,-95 -45,-80"
        id="path3025"
        inkscape:connector-curvature="0"
        inkscape:export-filename="D:\cryptograph_ico.png"
        inkscape:export-xdpi="14.620793"
-       inkscape:export-ydpi="14.620793" />
+       inkscape:export-ydpi="14.620793"
+       sodipodi:nodetypes="ccc" />
     <path
        style="fill:#d4aa00;fill-opacity:1;stroke:#b39100;stroke-width:1;stroke-miterlimit:4;stroke-opacity:1;stroke-dasharray:none;display:inline"
-       d="m 96.784356,332.5309 0,36.09375 0.125,0 c 0.57136,21.84315 18.456504,39.375 40.437494,39.375 22.34138,0 40.4375,-18.12736 40.4375,-40.46875 0,-0.97857 -0.0255,-1.91381 -0.0937,-2.875 l 0,-32.125 -80.906244,0 z m 40.906244,23.53125 c 4.19005,0 7.5625,3.37245 7.5625,7.5625 0,2.54044 -1.23974,4.77986 -3.15625,6.15625 l 0,10.65625 c 0,2.28279 -1.84222,4.125 -4.125,4.125 -2.28278,0 -4.125,-1.84221 -4.125,-4.125 l 0,-10.25 c -2.25247,-1.31497 -3.75,-3.76532 -3.75,-6.5625 0,-4.19005 3.40371,-7.5625 7.59375,-7.5625 z"
+       d="m 98.927213,337.35233 0,36.09375 0.125,0 c 0.57136,21.84315 18.456507,39.375 40.437497,39.375 22.34138,0 40.4375,-18.12736 40.4375,-40.46875 0,-0.97857 -0.0255,-1.91381 -0.0937,-2.875 l 0,-32.125 -80.906247,0 z m 40.906247,23.53125 c 4.19005,0 7.5625,3.37245 7.5625,7.5625 0,2.54044 -1.23974,4.77986 -3.15625,6.15625 l 0,10.65625 c 0,2.28279 -1.84222,4.125 -4.125,4.125 -2.28278,0 -4.125,-1.84221 -4.125,-4.125 l 0,-10.25 c -2.25247,-1.31497 -3.75,-3.76532 -3.75,-6.5625 0,-4.19005 3.40371,-7.5625 7.59375,-7.5625 z"
        id="rect5324"
        inkscape:connector-curvature="0"
        inkscape:export-filename="D:\cryptograph_ico.png"
@@ -210,7 +227,7 @@
        inkscape:export-ydpi="14.620793" />
     <path
        style="fill:url(#linearGradient4393);fill-opacity:1;stroke:none;display:inline"
-       d="m 96.781249,332.52679 0,36.09375 0.125,0 c 0.136622,5.22308 1.282935,10.20069 3.218751,14.75 9.11279,-7.04649 19.15915,-14.23849 30.125,-21.25 0.002,-0.01 -0.002,-0.0213 0,-0.0312 0.70878,-3.45251 3.77121,-6.03125 7.4375,-6.03125 0.66002,0 1.29678,0.0926 1.90625,0.25 11.79054,-7.08103 24.52606,-13.84962 38.09375,-19.96875 l 0,-3.8125 -80.906251,0 z"
+       d="m 98.924106,337.34822 0,36.09375 0.125,0 c 0.136622,5.22308 1.282934,10.20069 3.218754,14.75 9.11279,-7.04649 19.15915,-14.23849 30.125,-21.25 0.002,-0.01 -0.002,-0.0213 0,-0.0312 0.70878,-3.45251 3.77121,-6.03125 7.4375,-6.03125 0.66002,0 1.29678,0.0926 1.90625,0.25 11.79054,-7.08103 24.52606,-13.84962 38.09375,-19.96875 l 0,-3.8125 -80.906254,0 z"
        id="path4384"
        inkscape:connector-curvature="0"
        inkscape:export-filename="D:\cryptograph_ico.png"

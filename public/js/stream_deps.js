@@ -71,6 +71,10 @@ var Friend = function(name) {
 }
 
 Friend.prototype.changeConversation = function() {
+	$('#recipients').tokenfield('setTokens', [this.name]);
+	$('#filter').tokenfield('setTokens', [this.name]);
+
+    $('#message').focus();
 }
 
 Friend.prototype.addConversation = function() {
@@ -110,7 +114,7 @@ var localStorageManagement = function (name, startPrimus) {
         }
 };
 
-var Post = function(from, time, content, recipients, name) {
+var Post = function(from, time, content, recipients, name, friendViewModel) {
     this.from = from;
     this.time = time;
     this.dateString = (new Date(time)).toLocaleString();
@@ -118,6 +122,7 @@ var Post = function(from, time, content, recipients, name) {
     this.recipients = recipients;
     this.name = name;
     this.recipientsString = "To: " + recipients.join(', ');
+    this.friendViewModel = friendViewModel;
 }
 
 Post.prototype.replyHandler = function() {
@@ -135,6 +140,10 @@ Post.prototype.replyHandler = function() {
 Post.prototype.recipientsHandler = function(data, event) {
     console.log("i was here");
     $(event.target).toggleClass('nowrap ellipsis');
+}
+
+Post.prototype.addFriend = function() {
+    this.friendViewModel.friends.push(new Friend(this.from));
 }
 
 var PostViewModel = function() {
@@ -164,7 +173,7 @@ var PostViewModel = function() {
         }, this);
 }
 
-var receiveMessageCreator = function(name, viewModel) {
+var receiveMessageCreator = function(name, postViewModel, friendViewModel) {
     return function(data) {
         var localdata = JSON.parse(sessionStorage[name]);
         var BigInteger = forge.jsbn.BigInteger;
@@ -184,11 +193,11 @@ var receiveMessageCreator = function(name, viewModel) {
             var publicKey = forge.pki.setRsaPublicKey(new BigInteger(pk.n), new BigInteger(pk.e));
 
             if (publicKey.verify(md.digest().bytes(), data.signature)
-                && viewModel.ids[data._id] === undefined) {
-                    viewModel.ids[data._id] = data._id;
+                && postViewModel.ids[data._id] === undefined) {
+                    postViewModel.ids[data._id] = data._id;
                     var safemessage = $('<div>').text(message).html();
                     safemessage = safemessage.replace(/(?:\r\n|\r|\n)/g, '<br />');
-                    viewModel.posts.unshift(new Post(data.from, data.time, safemessage, data.recipients, name));
+                    postViewModel.posts.unshift(new Post(data.from, data.time, safemessage, data.recipients, name, friendViewModel));
                 }
         });
     }

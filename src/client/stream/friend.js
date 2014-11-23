@@ -3,6 +3,10 @@ var Friend = function(name) {
 }
 
 Friend.prototype.changeConversation = function() {
+	$('#recipients').tokenfield('setTokens', [this.name]);
+	$('#filter').tokenfield('setTokens', [this.name]);
+
+    $('#message').focus();
 }
 
 Friend.prototype.addConversation = function() {

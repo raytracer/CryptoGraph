@@ -3,14 +3,13 @@ var initUi = function() {
 		$('.row-offcanvas').toggleClass('active');
 	});
 
-	var mainCanvas = document.getElementById("stream");
-	var sidebar = document.getElementById("sidebar");
+	var mainCanvas = document.getElementsByClassName("starter-template")[0];
 
     Hammer(mainCanvas).on("swiperight", function() {
 		$('.row-offcanvas').addClass('active');
     });
 
-    Hammer(sidebar).on("swipeleft", function() {
+    Hammer(mainCanvas).on("swipeleft", function() {
 		$('.row-offcanvas').removeClass('active');
     });
 
@@ -22,11 +21,12 @@ var initUi = function() {
 $(document).ready(function() {
 	initUi();
 
+	friendViewModel = new FriendViewModel();
+	ko.applyBindings(friendViewModel, document.getElementById('friends'));
+
 	var postViewModel = new PostViewModel();
 	ko.applyBindings(postViewModel, document.getElementById('posts'));
 
-	friendViewModel = new FriendViewModel();
-	ko.applyBindings(friendViewModel, document.getElementById('friends'));
 
     $('#filter').on('tokenfield:createdtoken', function (e) {
         postViewModel.filter($('#filter').tokenfield('getTokens'));
@@ -48,7 +48,7 @@ $(document).ready(function() {
         var startPrimus = function() {
             var primus = new Primus(location.protocol + '//' + document.domain + ':' + port + '?' + serialize(params), {transformer: 'engine.io'});
             var messageStream = primus.substream('messageStream');
-            messageStream.on('data', receiveMessageCreator(name, postViewModel));
+            messageStream.on('data', receiveMessageCreator(name, postViewModel, friendViewModel));
             $('#sendform').submit(createSubmit(name, primus));
         };
 

@@ -37,7 +37,7 @@
 				<span class="icon-bar"></span>
 				<span class="icon-bar"></span>
 			</button>
-          <a class="navbar-brand" href="/">CryptoGraph</a>
+          <a href="/" class="navbar-brand">CryptoGraph</a>
         </div>
       </div>
     </div>
@@ -77,7 +77,14 @@
 				<script type="text/html" id="post-template">
 					<li class="post">
 						<p>
-							<strong data-bind="text: from"></strong>
+                            <div class="btn-group baseline">
+							    <span class="dropdown-toggle pointer" data-toggle="dropdown">
+                                    <strong data-bind="text: from"></strong><span class="caret"></span>
+                                </span>
+                                <ul class="dropdown-menu">
+                                    <li><a href="#" data-bind="click: addFriend">Add as friend</a></li>
+                                </ul>
+                            </div>
 							<span class="date" data-bind="text: dateString"></span>
 							<a class="reply" href="#" data-bind="click: replyHandler"><i class="fa fa-reply "></i> reply</a>
 						</p>
@@ -86,7 +93,7 @@
 					</li>
 				</script>
 				<script type="text/html" id="friend-template">
-                    <a href="#" class="list-group-item" data-bind="text: name"></a>
+                    <a href="#" class="list-group-item" data-bind="text: name, click: changeConversation"></a>
 				</script>
             </div>
         </div>

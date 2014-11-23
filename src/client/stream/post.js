@@ -1,4 +1,4 @@
-var Post = function(from, time, content, recipients, name) {
+var Post = function(from, time, content, recipients, name, friendViewModel) {
     this.from = from;
     this.time = time;
     this.dateString = (new Date(time)).toLocaleString();
@@ -6,6 +6,7 @@ var Post = function(from, time, content, recipients, name) {
     this.recipients = recipients;
     this.name = name;
     this.recipientsString = "To: " + recipients.join(', ');
+    this.friendViewModel = friendViewModel;
 }
 
 Post.prototype.replyHandler = function() {
@@ -23,6 +24,10 @@ Post.prototype.replyHandler = function() {
 Post.prototype.recipientsHandler = function(data, event) {
     console.log("i was here");
     $(event.target).toggleClass('nowrap ellipsis');
+}
+
+Post.prototype.addFriend = function() {
+    this.friendViewModel.friends.push(new Friend(this.from));
 }
 
 var PostViewModel = function() {
