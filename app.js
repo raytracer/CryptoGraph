@@ -136,13 +136,39 @@ app.post('/user/exists', function(req, res){
 		return;
 	}
 
-	usersCol.findOne({name: req.user}, function(err, result) {
+	usersCol.findOne({name: req.body.user}, function(err, result) {
 		if (err || result === null) {
             res.json(false);
         } else {
             res.json(true);
         }
 	});
+});
+
+app.get('/user/friend', function(req, res) {
+    usersCol.findOne({name: req.user}, {friends: 1}, function(err, result) {
+        if (err || result < 1) {
+            res.json(false);
+        } else {
+            res.json(result.friends || []);
+        }
+    });
+});
+
+app.post('/user/friend/add', function(req, res) {
+    if (req.user === req.body.friend) {
+        res.json(false);
+        return;
+    }
+
+    usersCol.update({name: req.user}, {"$addToSet": {friends: req.body.friend}}, function(err, result) {
+        if (err || result === null) {
+            console.log(err);
+            res.json(false);
+        } else {
+            res.json(true);
+        }
+    });
 });
 
 app.get('/logout', function(req, res){

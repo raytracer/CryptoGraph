@@ -27,7 +27,13 @@ Post.prototype.recipientsHandler = function(data, event) {
 }
 
 Post.prototype.addFriend = function() {
-    this.friendViewModel.friends.push(new Friend(this.from));
+    var self = this;
+
+    $.post('/user/friend/add', {friend: self.from}, function(response) {
+        if (response === true) {
+            self.friendViewModel.addFriend(new Friend(self.from));
+        }
+    });
 }
 
 var PostViewModel = function() {
@@ -35,24 +41,25 @@ var PostViewModel = function() {
     this.posts = ko.observableArray([]);
     this.filter = ko.observableArray([]);
     this.slideElement = function(elem) { if (elem.nodeType === 1) $(elem).hide().slideDown() }
-        this.filteredPosts = ko.pureComputed(function() {
-            var filter = this.filter();
+    this.filteredPosts = ko.pureComputed(function() {
+        var filter = this.filter();
 
-            var posts = this.posts().sort(function(l,r) {
-                return l.time <= r.time ? 1 : -1;
-            });
+        var posts = this.posts().sort(function(l,r) {
+            return l.time <= r.time ? 1 : -1;
+        });
 
-            if (filter.length < 1) {
-                return posts;
+        if (filter.length < 1) {
+            return posts;
+        }
+
+        return ko.utils.arrayFilter(posts, function(post) {
+            for (var i = 0; i < filter.length; i++) {
+                if (post.from === filter[i].value) return true;
+                if (post.from === post.name &&
+                    post.recipients.indexOf(filter[i].value) !== -1) return true;
             }
 
-            return ko.utils.arrayFilter(posts, function(post) {
-                for (var i = 0; i < filter.length; i++) {
-                    if (post.from === filter[i].value) return true;
-                    if (post.from === post.name &&
-                        post.recipients.indexOf(filter[i].value) !== -1) return true;
-                }
             return false;
-            });
-        }, this);
+        });
+    }, this);
 }

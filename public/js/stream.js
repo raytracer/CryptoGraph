@@ -34,6 +34,11 @@ $(document).ready(function() {
         postViewModel.filter($('#filter').tokenfield('getTokens'));
     });
 
+    $.get('/user/friend', function (response) {
+        var friends = response.map(function (name) {return new Friend(name)});
+        friendViewModel.friends(friends);
+    });
+
     $.get('/user/getname', function (response) {
         var name = response.name;
         var token = response.token;
