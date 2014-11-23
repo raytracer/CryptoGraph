@@ -28,16 +28,16 @@
 
   <body>
 
-    <div class="navbar navbar-inverse navbar-fixed-top" role="navigation">
+    <div class="navbar navbar-default navbar-fixed-top" role="navigation">
       <div class="container">
         <div class="navbar-header">
-          <button type="button" class="navbar-toggle" data-toggle="collapse" data-target=".navbar-collapse">
-            <span class="sr-only">Toggle navigation</span>
-            <span class="icon-bar"></span>
-            <span class="icon-bar"></span>
-            <span class="icon-bar"></span>
-          </button>
-          <a class="navbar-brand" href="/">CryptoGraph</a>
+			<button type="button" id="sidebar-button" class="navbar-toggle">
+				<span class="sr-only">Toggle navigation</span>
+				<span class="icon-bar"></span>
+				<span class="icon-bar"></span>
+				<span class="icon-bar"></span>
+			</button>
+          <a href="/" class="navbar-brand">CryptoGraph</a>
         </div>
       </div>
     </div>
@@ -45,8 +45,18 @@
     <div class="container">
 
       <div class="starter-template">
-        <div class="row">
-            <div id="stream" class="col-md-6 col-md-offset-3">
+          <div class="row row-offcanvas row-offcanvas-left">
+              <div class="col-xs-9 col-sm-3 sidebar-offcanvas" id="sidebar" role="navigation">
+                  <div class="panel panel-default">
+                      <div class="panel-heading">Administration</div>
+                      <div class="list-group">
+                          <a href="/logout" class="list-group-item">Logout</a>
+                      </div>
+                      <div class="panel-heading heading-border">Friends</div>
+                      <div class="list-group" id="friends" data-bind="template: { name: 'friend-template', foreach: friends}"></div>
+                  </div>
+              </div>
+            <div id="stream" class="col-xs-12 col-sm-6 col-sm-offset-2">
                 <h1>Your Stream</h1>
                 <form id="sendform" role="form">
                     <div class="form-group">
@@ -67,12 +77,23 @@
 				<script type="text/html" id="post-template">
 					<li class="post">
 						<p>
-							<strong data-bind="text: from"></strong>
+                            <div class="btn-group baseline">
+							    <span class="dropdown-toggle pointer" data-toggle="dropdown">
+                                    <strong data-bind="text: from"></strong><span class="caret"></span>
+                                </span>
+                                <ul class="dropdown-menu">
+                                    <li><a href="#" data-bind="click: addFriend">Add as friend</a></li>
+                                </ul>
+                            </div>
 							<span class="date" data-bind="text: dateString"></span>
 							<a class="reply" href="#" data-bind="click: replyHandler"><i class="fa fa-reply "></i> reply</a>
 						</p>
 						<p data-bind="html: content"></p>
+						<p class="recipients nowrap ellipsis" data-bind="text: recipientsString, click: recipientsHandler"></p>
 					</li>
+				</script>
+				<script type="text/html" id="friend-template">
+                    <a href="#" class="list-group-item" data-bind="text: name, click: changeConversation"></a>
 				</script>
             </div>
         </div>
@@ -116,8 +137,10 @@
     <script src="https://cdnjs.cloudflare.com/ajax/libs/knockout/3.2.0/knockout-min.js"></script>
     <script src="/js/bootstrap.min.js"></script>
     <script src="/js/bootstrap-tokenfield.js"></script>
+    <script src="/js/hammer.min.js"></script>
     <script src="/js/forge.min.js"></script>
     <script src="/primus/primus.js"></script>
+    <script src="/js/stream_deps.js"></script>
     <script src="/js/stream.js"></script>
   </body>
 </html>

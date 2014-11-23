@@ -1,6 +1,7 @@
 html {
     overflow: -moz-scrollbars-vertical;
     overflow-y: scroll;
+	overflow-x: hidden;
 }
 
 body {
@@ -40,6 +41,73 @@ h1 {
     text-decoration: none;
 }
 
-span.date {
+.date {
     color: #999;
+}
+
+.recipients {
+    color: #999;
+    margin-bottom: 0px;
+}
+
+.nowrap {
+    white-space: nowrap;
+}
+
+.ellipsis {
+    overflow: hidden;
+    text-overflow: ellipsis;
+}
+
+.heading-border {
+    border-top: 1px solid;
+}
+
+.baseline {
+    vertical-align: baseline;
+}
+
+.pointer {
+    cursor: pointer;
+}
+
+@media screen and (max-width: 767px) {
+  .row-offcanvas {
+    position: relative;
+    -webkit-transition: all .25s ease-out;
+         -o-transition: all .25s ease-out;
+            transition: all .25s ease-out;
+  }
+
+  .row-offcanvas-right {
+    right: 0;
+  }
+
+  .row-offcanvas-left {
+    left: 0;
+  }
+
+  .row-offcanvas-right
+  .sidebar-offcanvas {
+    right: -80%; /* 6 columns */
+  }
+
+  .row-offcanvas-left
+  .sidebar-offcanvas {
+    left: -80%; /* 6 columns */
+  }
+
+  .row-offcanvas-right.active {
+    right: 80%; /* 6 columns */
+  }
+
+  .row-offcanvas-left.active {
+    left: 80%; /* 6 columns */
+  }
+
+  .sidebar-offcanvas {
+    position: absolute;
+    top: 0;
+    width: 80%; /* 6 columns */
+  }
 }
