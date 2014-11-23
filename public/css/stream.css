@@ -41,8 +41,26 @@ h1 {
     text-decoration: none;
 }
 
-span.date {
+.date {
     color: #999;
+}
+
+.recipients {
+    color: #999;
+    margin-bottom: 0px;
+}
+
+.nowrap {
+    white-space: nowrap;
+}
+
+.ellipsis {
+    overflow: hidden;
+    text-overflow: ellipsis;
+}
+
+.heading-border {
+    border-top: 1px solid;
 }
 
 @media screen and (max-width: 767px) {

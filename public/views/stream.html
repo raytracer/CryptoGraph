@@ -49,15 +49,11 @@
               <div class="col-xs-9 col-sm-3 sidebar-offcanvas" id="sidebar" role="navigation">
                   <div class="panel panel-default">
                       <div class="panel-heading">Administration</div>
-                          <a href="/logout" class="list-group-item">Logout</a>
-                      <div class="panel-heading">Your Friends</div>
                       <div class="list-group">
-                          <a href="#" class="list-group-item">Friend</a>
-                          <a href="#" class="list-group-item">Friend</a>
-                          <a href="#" class="list-group-item">Friend</a>
-                          <a href="#" class="list-group-item">Friend</a>
-                          <a href="#" class="list-group-item">Friend</a>
+                          <a href="/logout" class="list-group-item">Logout</a>
                       </div>
+                      <div class="panel-heading heading-border">Friends</div>
+                      <div class="list-group" id="friends" data-bind="template: { name: 'friend-template', foreach: friends}"></div>
                   </div>
               </div>
             <div id="stream" class="col-xs-12 col-sm-6 col-sm-offset-2">
@@ -86,7 +82,11 @@
 							<a class="reply" href="#" data-bind="click: replyHandler"><i class="fa fa-reply "></i> reply</a>
 						</p>
 						<p data-bind="html: content"></p>
+						<p class="recipients nowrap ellipsis" data-bind="text: recipientsString, click: recipientsHandler"></p>
 					</li>
+				</script>
+				<script type="text/html" id="friend-template">
+                    <a href="#" class="list-group-item" data-bind="text: name"></a>
 				</script>
             </div>
         </div>

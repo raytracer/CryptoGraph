@@ -5,6 +5,7 @@ var Post = function(from, time, content, recipients, name) {
     this.content = content;
     this.recipients = recipients;
     this.name = name;
+    this.recipientsString = "To: " + recipients.join(', ');
 }
 
 Post.prototype.replyHandler = function() {
@@ -17,6 +18,11 @@ Post.prototype.replyHandler = function() {
 
     $('#recipients').tokenfield('setTokens', replyRecipients);
     $('#message').focus();
+}
+
+Post.prototype.recipientsHandler = function(data, event) {
+    console.log("i was here");
+    $(event.target).toggleClass('nowrap ellipsis');
 }
 
 var PostViewModel = function() {

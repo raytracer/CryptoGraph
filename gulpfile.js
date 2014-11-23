@@ -16,7 +16,7 @@ gulp.task('minify', function() {
 
 gulp.task('watch', function() {
   var server = livereload();
-  gulp.watch('src/client/**.js', ['minify']).on('change', function(file) {
+  gulp.watch('src/client/**', ['minify']).on('change', function(file) {
       server.changed(file.path);
   });
   //nodemon({script: 'app.js'});
