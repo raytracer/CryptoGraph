@@ -147,7 +147,7 @@ app.post('/user/exists', function(req, res){
 
 app.get('/user/friend', function(req, res) {
     usersCol.findOne({name: req.user}, {friends: 1}, function(err, result) {
-        if (err || result < 1) {
+        if (err || result === null) {
             res.json(false);
         } else {
             res.json(result.friends || []);
