@@ -52,7 +52,7 @@
                       <div class="list-group">
                           <a href="/logout" class="list-group-item">Logout</a>
                       </div>
-                      <div class="panel-heading heading-border">Friends</div>
+                      <div class="panel-heading heading-border">Contacts</div>
                       <div class="list-group" id="friends" data-bind="template: { name: 'friend-template', foreach: uniqueFriends}"></div>
                   </div>
               </div>
@@ -82,7 +82,7 @@
                                     <strong data-bind="text: from"></strong><span class="caret"></span>
                                 </span>
                                 <ul class="dropdown-menu">
-                                    <li><a href="#" data-bind="click: addFriend">Add as friend</a></li>
+                                    <li><a href="#" data-bind="click: addFriend">Add to contacts</a></li>
                                 </ul>
                             </div>
 							<span class="date" data-bind="text: dateString"></span>
