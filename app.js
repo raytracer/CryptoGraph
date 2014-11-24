@@ -27,7 +27,8 @@ app.use(bodyParser.json());
 app.use(bodyParser.urlencoded({extended: true}));
 app.use(cookieParser());
 app.use(session({ secret: 'keyboard cat', saveUninitialized: true,
-                 resave: true}));
+                 resave: true,
+                 cookie: {maxAge:86400000}}));
 // Initialize Passport!  Also use passport.session() middleware, to support
 // persistent login sessions (recommended).
 app.use(passport.initialize());
