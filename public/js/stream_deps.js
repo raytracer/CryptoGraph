@@ -74,6 +74,7 @@ Friend.prototype.changeConversation = function() {
 	$('#recipients').tokenfield('setTokens', [this.name]);
 	$('#filter').tokenfield('setTokens', [this.name]);
 
+	$('.row-offcanvas').removeClass('active');
     $('#message').focus();
 }
 
