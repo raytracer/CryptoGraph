@@ -17,6 +17,15 @@ var initUi = function() {
 	$('#filter').tokenfield();
 }
 
+var loadmore = function(requestStream) {
+	var delay = 86400000;
+	$('#loadmore').click(function (event) {
+		requestStream.write({'sendMore': delay});
+		delay += 86400000;
+		event.preventDefault();
+	});
+};
+
 
 $(document).ready(function() {
 	initUi();
@@ -53,6 +62,7 @@ $(document).ready(function() {
         var startPrimus = function() {
             var primus = new Primus(location.protocol + '//' + document.domain + ':' + port + '?' + serialize(params), {transformer: 'engine.io'});
             var messageStream = primus.substream('messageStream');
+			loadmore(primus.substream('requestStream'));
             messageStream.on('data', receiveMessageCreator(name, postViewModel, friendViewModel));
             $('#sendform').submit(createSubmit(name, primus));
         };

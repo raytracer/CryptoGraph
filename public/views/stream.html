@@ -73,6 +73,7 @@
                     <input type="text" class="form-control" id="filter" placeholder="Filter your messages by user name">
                 </div>
 				<ul id="posts" data-bind="template: { name: 'post-template', foreach: filteredPosts, afterAdd: slideElement}"></ul>
+				<a href="#" id="loadmore">Show the next 24h of conversation</a>
 
 				<script type="text/html" id="post-template">
 					<li class="post">

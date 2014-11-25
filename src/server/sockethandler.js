@@ -14,7 +14,9 @@ var startPrimus = function (server, db) {
     primus.on('connection', function connection(spark) {
         var username = spark.query.name;
         var token = spark.query.token;
+
         var messageStream = spark.substream('messageStream');
+		var requestStream = spark.substream('requestStream');
 
         if (username !== undefined && token !== undefined) {
             jwt.verify(token, 'debug_secret', function(err, decoded) {
@@ -33,7 +35,9 @@ var startPrimus = function (server, db) {
                     sparks[spark.id] = spark;
                 }
 
-                mdb.getMessagesByName(db, username, function (messages) {
+				var time = (new Date()).getTime() - 24 * 3600 * 1000;
+
+                mdb.getMessagesByName(db, username, time, 10, function (messages) {
                     for (var i = 0; i < messages.length; i++) {
                         spark.substream('messageStream').write(messages[i]);
                     }
@@ -67,6 +71,18 @@ var startPrimus = function (server, db) {
                     }
                 };
 
+				var serviceRequest = function (data) {
+					if (data.sendMore !== undefined) {
+						var delay = data.sendMore;
+						mdb.getMessagesByName(db, username, time - delay, 0, function (messages) {
+							for (var i = 0; i < messages.length; i++) {
+								spark.substream('messageStream').write(messages[i]);
+							}
+						});
+					}
+				};
+
+				requestStream.on('data', serviceRequest);
                 messageStream.on('data', sendMessage);
 
                 spark.on('end', function () {
