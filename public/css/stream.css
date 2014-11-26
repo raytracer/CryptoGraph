@@ -35,6 +35,10 @@ h1 {
     -moz-box-shadow: rgba(0,0,0,0.2) 0px 1px 3px;
     box-shadow: rgba(0,0,0,0.2) 0px 1px 3px;
 	word-wrap: break-word;
+	-webkit-user-select: text;
+	-moz-user-select: text;
+	-ms-user-select: text;
+	user-select: text;
 }
 
 .reply:hover {
@@ -75,6 +79,7 @@ h1 {
 	text-align: center;
 	display: block;
 	text-decoration: none;
+	margin-bottom: 10px;
 }
 
 

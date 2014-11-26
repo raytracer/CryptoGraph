@@ -15,6 +15,8 @@ var initUi = function() {
 
 	$('#recipients').tokenfield();
 	$('#filter').tokenfield();
+
+	if (window.Notification) Notification.requestPermission();
 }
 
 var loadmore = function(requestStream) {
@@ -30,7 +32,7 @@ var loadmore = function(requestStream) {
 $(document).ready(function() {
 	initUi();
 
-	friendViewModel = new FriendViewModel();
+	var friendViewModel = new FriendViewModel();
 	ko.applyBindings(friendViewModel, document.getElementById('friends'));
 
 	var postViewModel = new PostViewModel();
