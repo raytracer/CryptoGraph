@@ -20,7 +20,7 @@ var createSubmit = function(name, primus) {
         var messages = [];
 
         var ownPublicKey = forge.pki.setRsaPublicKey(new BigInteger(data.n), new BigInteger(data.e));
-        var ownEncrypted = ownPublicKey.encrypt(message);
+        var ownEncrypted = ownPublicKey.encrypt(forge.util.encodeUtf8(message));
 
         messages.push({
             'name': name,
@@ -78,7 +78,9 @@ Friend.prototype.changeConversation = function() {
     $('#message').focus();
 }
 
-Friend.prototype.addConversation = function() {
+Friend.prototype.addConversation = function(event) {
+	$('#recipients').tokenfield('createToken', this.name);
+	$('#filter').tokenfield('createToken', this.name);
 }
 
 var FriendViewModel = function() {
@@ -199,7 +201,7 @@ var receiveMessageCreator = function(name, postViewModel, friendViewModel) {
     return function(data) {
 		var showMessage = function(message) {
 			if ("Notification" in window && Notification.permission === "granted" &&
-					document.hidden) {
+					(document.hidden || !document.hasFocus())) {
 				var n = new Notification(message);
 				n.onshow = function () { 
 					setTimeout(n.close.bind(n), 5000); 
@@ -212,7 +214,7 @@ var receiveMessageCreator = function(name, postViewModel, friendViewModel) {
         var pem = localdata.pem;
 
         var privateKey = forge.pki.privateKeyFromPem(pem);
-        var message = privateKey.decrypt(data.message);
+        var message = forge.util.decodeUtf8(privateKey.decrypt(data.message));
 
         var md = forge.md.sha1.create();
         md.update(message, 'utf8');

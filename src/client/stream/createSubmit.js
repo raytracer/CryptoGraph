@@ -20,7 +20,7 @@ var createSubmit = function(name, primus) {
         var messages = [];
 
         var ownPublicKey = forge.pki.setRsaPublicKey(new BigInteger(data.n), new BigInteger(data.e));
-        var ownEncrypted = ownPublicKey.encrypt(message);
+        var ownEncrypted = ownPublicKey.encrypt(forge.util.encodeUtf8(message));
 
         messages.push({
             'name': name,

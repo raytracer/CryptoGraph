@@ -43,6 +43,18 @@ $(document).ready(function() {
         postViewModel.filter($('#filter').tokenfield('getTokens'));
     }).on('tokenfield:removedtoken', function (e) {
         postViewModel.filter($('#filter').tokenfield('getTokens'));
+    }).on('tokenfield:createtoken', function (e) {
+		var value = e.attrs.value;
+		var tokens = $('#filter').tokenfield('getTokens');
+		tokens = tokens.map(function (t) {return t.value});
+		if (tokens.indexOf(value) !== -1) return false;
+    });
+
+    $('#recipients').on('tokenfield:createtoken', function (e) {
+		var value = e.attrs.value;
+		var tokens = $('#recipients').tokenfield('getTokens');
+		tokens = tokens.map(function (t) {return t.value});
+		if (tokens.indexOf(value) !== -1) return false;
     });
 
     $.get('/user/friend', function (response) {

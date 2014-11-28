@@ -10,7 +10,9 @@ Friend.prototype.changeConversation = function() {
     $('#message').focus();
 }
 
-Friend.prototype.addConversation = function() {
+Friend.prototype.addConversation = function(event) {
+	$('#recipients').tokenfield('createToken', this.name);
+	$('#filter').tokenfield('createToken', this.name);
 }
 
 var FriendViewModel = function() {

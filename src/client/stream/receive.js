@@ -2,7 +2,7 @@ var receiveMessageCreator = function(name, postViewModel, friendViewModel) {
     return function(data) {
 		var showMessage = function(message) {
 			if ("Notification" in window && Notification.permission === "granted" &&
-					document.hidden) {
+					(document.hidden || !document.hasFocus())) {
 				var n = new Notification(message);
 				n.onshow = function () { 
 					setTimeout(n.close.bind(n), 5000); 
@@ -15,7 +15,7 @@ var receiveMessageCreator = function(name, postViewModel, friendViewModel) {
         var pem = localdata.pem;
 
         var privateKey = forge.pki.privateKeyFromPem(pem);
-        var message = privateKey.decrypt(data.message);
+        var message = forge.util.decodeUtf8(privateKey.decrypt(data.message));
 
         var md = forge.md.sha1.create();
         md.update(message, 'utf8');
