@@ -1,4 +1,4 @@
-var createSubmit = function(name, primus) {
+var createSubmit = function(name, primus, keyDict) {
     return function(event) {
         var message = $('#message').val();
 
@@ -16,15 +16,22 @@ var createSubmit = function(name, primus) {
         var pem = data.pem;
 
         var privateKey = forge.pki.privateKeyFromPem(pem);
-
-        var messages = [];
-
         var ownPublicKey = forge.pki.setRsaPublicKey(new BigInteger(data.n), new BigInteger(data.e));
-        var ownEncrypted = ownPublicKey.encrypt(forge.util.encodeUtf8(message));
 
-        messages.push({
+        var keys = [];
+
+        var iv = forge.random.getBytesSync(16);
+        var key = forge.random.getBytesSync(16);
+        var cipher = forge.cipher.createCipher('AES-CBC', key);
+        cipher.start({iv: iv});
+        cipher.update(forge.util.createBuffer(message, 'utf8'));
+        cipher.finish();
+        var encryptedMessage = cipher.output.getBytes();
+        var encryptedKey = ownPublicKey.encrypt(key, 'RSA-OAEP');
+
+        keys.push({
             'name': name,
-            'message': ownEncrypted
+            'key': encryptedKey
         });
 
         var md = forge.md.sha1.create();
@@ -32,33 +39,39 @@ var createSubmit = function(name, primus) {
         var signature = privateKey.sign(md);
 
         var recipients = $.map($("#recipients").tokenfield("getTokens"), function(o) {return o.value;});
-        recipients = recipients.filter(function(elem) {
-            return elem.match(/\s+/) === null && elem.length > 0;
-        });
 
         var deferredRequests = [];
 
         for (var i = 0; i < recipients.length; i++) {
             (function (index) {
-                deferredRequests.push($.post('/user/getpublickey', {'name' : recipients[i]} , function(pk) {
+                var retrieveKey = function(pk) {
                     if (pk === false) {
                         return;
                     }
 
-                    var publicKey = forge.pki.setRsaPublicKey(new BigInteger(pk.n), new BigInteger(pk.e));
-                    var encrypted = publicKey.encrypt(message);
+                    if (keyDict[recipients[i]] === undefined) {
+                        keyDict[recipients[i]] = pk;
+                    }
 
-                    messages.push({
+                    var publicKey = forge.pki.setRsaPublicKey(new BigInteger(pk.n), new BigInteger(pk.e));
+                    var encryptedKey = publicKey.encrypt(key, 'RSA-OAEP');
+
+                    keys.push({
                         'name': recipients[index],
-                        'message': encrypted
+                        'key': encryptedKey
                     });
-                }));
+                }
+                if (keyDict[recipients[i]] === undefined) {
+                    deferredRequests.push($.post('/user/getpublickey', {'name' : recipients[i]}, retrieveKey));
+                } else {
+                    retrieveKey(keyDict[recipients[i]]);
+                }
             })(i);
         }
 
 
         $.when.apply(null, deferredRequests).done(function() {
-            primus.substream('messageStream').write({'messages': messages,
+            primus.substream('messageStream').write({'message': encryptedMessage, 'keys': keys, 'iv': iv,
                                                     'signature': signature, 'recipients': recipients});
         });
 

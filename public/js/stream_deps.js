@@ -1,4 +1,4 @@
-var createSubmit = function(name, primus) {
+var createSubmit = function(name, primus, keyDict) {
     return function(event) {
         var message = $('#message').val();
 
@@ -16,15 +16,22 @@ var createSubmit = function(name, primus) {
         var pem = data.pem;
 
         var privateKey = forge.pki.privateKeyFromPem(pem);
-
-        var messages = [];
-
         var ownPublicKey = forge.pki.setRsaPublicKey(new BigInteger(data.n), new BigInteger(data.e));
-        var ownEncrypted = ownPublicKey.encrypt(forge.util.encodeUtf8(message));
 
-        messages.push({
+        var keys = [];
+
+        var iv = forge.random.getBytesSync(16);
+        var key = forge.random.getBytesSync(16);
+        var cipher = forge.cipher.createCipher('AES-CBC', key);
+        cipher.start({iv: iv});
+        cipher.update(forge.util.createBuffer(message, 'utf8'));
+        cipher.finish();
+        var encryptedMessage = cipher.output.getBytes();
+        var encryptedKey = ownPublicKey.encrypt(key, 'RSA-OAEP');
+
+        keys.push({
             'name': name,
-            'message': ownEncrypted
+            'key': encryptedKey
         });
 
         var md = forge.md.sha1.create();
@@ -32,33 +39,39 @@ var createSubmit = function(name, primus) {
         var signature = privateKey.sign(md);
 
         var recipients = $.map($("#recipients").tokenfield("getTokens"), function(o) {return o.value;});
-        recipients = recipients.filter(function(elem) {
-            return elem.match(/\s+/) === null && elem.length > 0;
-        });
 
         var deferredRequests = [];
 
         for (var i = 0; i < recipients.length; i++) {
             (function (index) {
-                deferredRequests.push($.post('/user/getpublickey', {'name' : recipients[i]} , function(pk) {
+                var retrieveKey = function(pk) {
                     if (pk === false) {
                         return;
                     }
 
-                    var publicKey = forge.pki.setRsaPublicKey(new BigInteger(pk.n), new BigInteger(pk.e));
-                    var encrypted = publicKey.encrypt(message);
+                    if (keyDict[recipients[i]] === undefined) {
+                        keyDict[recipients[i]] = pk;
+                    }
 
-                    messages.push({
+                    var publicKey = forge.pki.setRsaPublicKey(new BigInteger(pk.n), new BigInteger(pk.e));
+                    var encryptedKey = publicKey.encrypt(key, 'RSA-OAEP');
+
+                    keys.push({
                         'name': recipients[index],
-                        'message': encrypted
+                        'key': encryptedKey
                     });
-                }));
+                }
+                if (keyDict[recipients[i]] === undefined) {
+                    deferredRequests.push($.post('/user/getpublickey', {'name' : recipients[i]}, retrieveKey));
+                } else {
+                    retrieveKey(keyDict[recipients[i]]);
+                }
             })(i);
         }
 
 
         $.when.apply(null, deferredRequests).done(function() {
-            primus.substream('messageStream').write({'messages': messages,
+            primus.substream('messageStream').write({'message': encryptedMessage, 'keys': keys, 'iv': iv,
                                                     'signature': signature, 'recipients': recipients});
         });
 
@@ -197,31 +210,39 @@ var PostViewModel = function() {
     }, this);
 }
 
-var receiveMessageCreator = function(name, postViewModel, friendViewModel) {
+var receiveMessageCreator = function(name, postViewModel, friendViewModel, keyDict) {
+    var localdata = JSON.parse(sessionStorage[name]);
+    var pem = localdata.pem;
+    var privateKey = forge.pki.privateKeyFromPem(pem);
+
     return function(data) {
 		var showMessage = function(message) {
 			if ("Notification" in window && Notification.permission === "granted" &&
 					(document.hidden || !document.hasFocus())) {
 				var n = new Notification(message);
-				n.onshow = function () { 
-					setTimeout(n.close.bind(n), 5000); 
+				n.onshow = function () {
+					setTimeout(n.close.bind(n), 5000);
 				};
 			}
 		};
 
-        var localdata = JSON.parse(sessionStorage[name]);
         var BigInteger = forge.jsbn.BigInteger;
-        var pem = localdata.pem;
 
-        var privateKey = forge.pki.privateKeyFromPem(pem);
-        var message = forge.util.decodeUtf8(privateKey.decrypt(data.message));
-
+        var key = privateKey.decrypt(data.encryptedKey, 'RSA-OAEP');
+        var decipher = forge.cipher.createDecipher('AES-CBC', key);
+        decipher.start({iv: data.iv});
+        decipher.update(forge.util.createBuffer(data.message));
+        decipher.finish();
+        var message = decipher.output.toString('utf8');
         var md = forge.md.sha1.create();
         md.update(message, 'utf8');
 
-        $.post('/user/getpublickey', {'name' : data.from}, function(pk) {
+        var verifyKey = function(pk) {
             if (pk === false) {
                 return;
+            }
+            if (keyDict[data.from] === undefined) {
+                keyDict[data.from] = pk;
             }
 
             var publicKey = forge.pki.setRsaPublicKey(new BigInteger(pk.n), new BigInteger(pk.e));
@@ -234,7 +255,13 @@ var receiveMessageCreator = function(name, postViewModel, friendViewModel) {
                     safemessage = safemessage.replace(/(?:\r\n|\r|\n)/g, '<br />');
                     postViewModel.posts.unshift(new Post(data.from, data.time, safemessage, data.recipients, name, friendViewModel));
                 }
-        });
+        }
+
+        if (keyDict[data.from] === undefined) {
+            $.post('/user/getpublickey', {'name' : data.from}, verifyKey);
+        } else {
+            verifyKey(keyDict[data.from]);
+        }
     }
 };
 

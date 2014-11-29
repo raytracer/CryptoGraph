@@ -77,8 +77,9 @@ $(document).ready(function() {
             var primus = new Primus(location.protocol + '//' + document.domain + ':' + port + '?' + serialize(params), {transformer: 'engine.io'});
             var messageStream = primus.substream('messageStream');
 			loadmore(primus.substream('requestStream'));
-            messageStream.on('data', receiveMessageCreator(name, postViewModel, friendViewModel));
-            $('#sendform').submit(createSubmit(name, primus));
+            var keyDict = {};
+            messageStream.on('data', receiveMessageCreator(name, postViewModel, friendViewModel, keyDict));
+            $('#sendform').submit(createSubmit(name, primus, keyDict));
         };
 
         localStorageManagement(name, startPrimus);

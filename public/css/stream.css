@@ -85,7 +85,11 @@ h1 {
 .plus {
 	float: right;
 	line-height: inherit;
-	font-size: 120%;
+	font-size: 125%;
+}
+
+.plus:hover {
+    color: #2c363f;
 }
 
 

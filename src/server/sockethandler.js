@@ -1,5 +1,6 @@
 var Primus = require('primus'),
     jwt = require('jsonwebtoken'),
+    mongodb = require('mongodb'),
     mdb = require('./messagedb');
 
 var startPrimus = function (server, db) {
@@ -44,31 +45,37 @@ var startPrimus = function (server, db) {
                 });
 
                 var sendMessage = function (data) {
-                    if (data.messages !== undefined) {
-                        for (var i = 0; i < data.messages.length; i++) {
-                            var name = data.messages[i].name;
-                            var allsparks = nameToSparkId[name];
+                    var message = {};
+                    message.message = data.message;
+                    message.signature = data.signature;
+                    message.read = false;
+                    message.from = username;
+                    message.time = (new Date()).getTime();
+                    message.iv = data.iv;
+                    message.recipients = data.recipients;
+                    message._id = new mongodb.ObjectID();
 
-                            var message = data.messages[i];
-                            message.signature = data.signature;
-                            message.read = false;
-                            message.from = username;
-							message.to = name;
-                            message.time = (new Date()).getTime();
-                            message.recipients = data.recipients;
+                    for (var i = 0; i < data.keys.length; i++) {
+                        var name = data.keys[i].name;
+                        var allsparks = nameToSparkId[name];
 
-                            if (allsparks !== undefined) {
-                                for (var j = 0; j < allsparks.length; j++) {
-                                    var spark = sparks[allsparks[j]];
-                                    spark.substream('messageStream').write(message);
+                        message.encryptedKey = data.keys[i].key;
 
-                                    message.read = true;
-                                }
+                        if (allsparks !== undefined) {
+                            for (var j = 0; j < allsparks.length; j++) {
+                                var spark = sparks[allsparks[j]];
+                                spark.substream('messageStream').write(message);
+
+                                message.read = true;
                             }
-
-                            mdb.saveMessage(db, message);
                         }
+
                     }
+
+                    message.keys = data.keys;
+                    delete message.recipients;
+                    delete message.encryptedKey;
+                    mdb.saveMessage(db, message);
                 };
 
 				var serviceRequest = function (data) {
