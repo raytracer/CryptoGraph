@@ -40,7 +40,12 @@ var PostViewModel = function() {
     this.ids = {};
     this.posts = ko.observableArray([]);
     this.filter = ko.observableArray([]);
-    this.slideElement = function(elem) { if (elem.nodeType === 1) $(elem).hide().slideDown() }
+    this.slideElement = function(elem) {
+        if (elem.nodeType === 1) {
+            $(elem).hide().slideDown()
+            $(elem).linkify();;
+        }
+    }
     this.filteredPosts = ko.pureComputed(function() {
         var filter = this.filter();
 

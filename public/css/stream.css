@@ -41,6 +41,19 @@ h1 {
 	user-select: text;
 }
 
+.content {
+    margin-top: 10px;
+}
+
+a {
+    color: #47525C;
+    text-decoration: none;
+}
+
+a:hover {
+    text-decoration: none;
+}
+
 .reply:hover {
     text-decoration: none;
 }
@@ -78,7 +91,6 @@ h1 {
 #loadmore {
 	text-align: center;
 	display: block;
-	text-decoration: none;
 	margin-bottom: 10px;
 }
 

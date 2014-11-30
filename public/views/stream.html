@@ -77,19 +77,17 @@
 
 				<script type="text/html" id="post-template">
 					<li class="post">
-						<p>
-                            <div class="btn-group baseline">
-							    <span class="dropdown-toggle pointer" data-toggle="dropdown">
-                                    <strong data-bind="text: from"></strong><span class="caret"></span>
-                                </span>
-                                <ul class="dropdown-menu">
-                                    <li><a href="#" data-bind="click: addFriend">Add to contacts</a></li>
-                                </ul>
-                            </div>
-							<span class="date" data-bind="text: dateString"></span>
-							<a class="reply" href="#" data-bind="click: replyHandler"><i class="fa fa-reply "></i> reply</a>
-						</p>
-						<p data-bind="html: content"></p>
+                        <div class="btn-group baseline">
+                            <span class="dropdown-toggle pointer" data-toggle="dropdown">
+                                <strong data-bind="text: from"></strong><span class="caret"></span>
+                            </span>
+                            <ul class="dropdown-menu">
+                                <li><a href="#" data-bind="click: addFriend">Add to contacts</a></li>
+                            </ul>
+                        </div>
+                        <span class="date" data-bind="text: dateString"></span>
+                        <a class="reply" href="#" data-bind="click: replyHandler"><i class="fa fa-reply "></i> reply</a>
+						<p class="content" data-bind="html: content"></p>
 						<p class="recipients nowrap ellipsis" data-bind="text: recipientsString, click: recipientsHandler"></p>
 					</li>
 				</script>
@@ -135,6 +133,7 @@
     ================================================== -->
     <!-- Placed at the end of the document so the pages load faster -->
     <script src="https://ajax.googleapis.com/ajax/libs/jquery/1.11.0/jquery.min.js"></script>
+    <script src="/js/jquery.linkify.min.js"></script>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/knockout/3.2.0/knockout-min.js"></script>
     <script src="/js/bootstrap.min.js"></script>
     <script src="/js/bootstrap-tokenfield.js"></script>

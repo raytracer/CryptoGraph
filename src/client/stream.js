@@ -17,6 +17,8 @@ var initUi = function() {
 	$('#filter').tokenfield();
 
 	if (window.Notification) Notification.requestPermission();
+
+    $('.post').linkify();
 }
 
 var loadmore = function(requestStream) {
