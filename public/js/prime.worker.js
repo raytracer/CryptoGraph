@@ -27,6 +27,8 @@ self.postMessage({found: false});
 var GCD_30_DELTA = [6, 4, 2, 4, 2, 4, 6, 2];
 
 function findPrime(data) {
+  // TODO: abstract based on data.algorithm (PRIMEINC vs. others)
+
   // create BigInteger from given random bytes
   var num = new BigInteger(data.hex, 16);
 
@@ -38,17 +40,11 @@ function findPrime(data) {
 
   // find nearest prime
   var workLoad = data.workLoad;
-  var e = new BigInteger(null);
-  e.fromInt(data.e);
   for(var i = 0; i < workLoad; ++i) {
     // do primality test
     if(isProbablePrime(num)) {
-      // ensure number is coprime with e
-      if(num.subtract(BigInteger.ONE).gcd(e).compareTo(BigInteger.ONE) === 0) {
-        return {found: true, prime: num.toString(16)};
-      }
+      return {found: true, prime: num.toString(16)};
     }
-
     // get next potential prime
     num.dAddOffset(GCD_30_DELTA[deltaIdx++ % 8], 0);
   }
@@ -67,7 +63,7 @@ function isProbablePrime(n) {
     }
     m = n.modInt(m);
     while(i < j) {
-      if(m % LOW_PRIMES[i++] == 0) {
+      if(m % LOW_PRIMES[i++] === 0) {
         return false;
       }
     }
@@ -87,15 +83,14 @@ function runMillerRabin(n) {
   }
   var d = n1.shiftRight(s);
 
-  var k = _getMillerRabinIterations(n);
+  var k = _getMillerRabinTests(n.bitLength());
   var prng = getPrng();
   var a;
   for(var i = 0; i < k; ++i) {
     // select witness 'a' at random from between 1 and n - 1
     do {
       a = new BigInteger(n.bitLength(), prng);
-    }
-    while(a.compareTo(BigInteger.ONE) <= 0 || a.compareTo(n1) >= 0);
+    } while(a.compareTo(BigInteger.ONE) <= 0 || a.compareTo(n1) >= 0);
 
     /* See if 'a' is a composite witness. */
 
@@ -145,7 +140,7 @@ function getPrng() {
 }
 
 /**
- * Returns the required number of Miller-Rabin iterations to generate a
+ * Returns the required number of Miller-Rabin tests to generate a
  * prime with an error probability of (1/2)^80.
  *
  * See Handbook of Applied Cryptography Chapter 4, Table 4.4.
@@ -154,7 +149,7 @@ function getPrng() {
  *
  * @return the required number of iterations.
  */
-function _getMillerRabinIterations(bits) {
+function _getMillerRabinTests(bits) {
   if(bits <= 100) return 27;
   if(bits <= 150) return 18;
   if(bits <= 200) return 15;
