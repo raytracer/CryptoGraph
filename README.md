@@ -11,7 +11,7 @@ The following libraries are used (for a complete list see package.json):
 - [passportjs](http://passportjs.org/) - used to authenticate the normal HTTP requests NOT used for websocket authentication
 - [node-jsonwebtoken](https://github.com/auth0/node-jsonwebtoken) - used to authenticate the websocket connection
 - [Twitter Bootstrap](http://getbootstrap.com) - for frontend styling and functionality
-- [mongodb](http://www.mongodb.org/) - popular Graph database
+- [mongodb](http://www.mongodb.org/) - popular document store
 
 ## Screenshot
 
