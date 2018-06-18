@@ -29,6 +29,6 @@ CryptoGraph is still a very early alpha (mainly for test purposes). It works by 
 
 **WARNING:** CryptoGraph is *not* ready for production use yet.
 
-##License
+## License
 
 MIT
