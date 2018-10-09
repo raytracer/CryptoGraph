@@ -11,7 +11,7 @@
     "engine.io": "1.4.2",
     "express": "^4.9.8",
     "express-session": "^1.9.0",
-    "jsonwebtoken": "~0.1.0",
+    "jsonwebtoken": "~8.3.0",
     "mongodb": "1.4.22",
     "passport": "0.2.0",
     "passport-local": "0.1.6",
